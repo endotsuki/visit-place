@@ -1,12 +1,11 @@
-import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
+import { Link, useLocation } from "wouter";
 
 const NotFound = () => {
-  const location = useLocation();
+  const [, navigate] = useLocation();
 
   useEffect(() => {
     console.error(
@@ -25,7 +24,8 @@ const NotFound = () => {
             Page Not Found
           </p>
           <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Sorry, the page you're looking for doesn't exist. Let's get you back on track.
+            Sorry, the page you're looking for doesn't exist. Let's get you back
+            on track.
           </p>
           <Link to="/">
             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, MapPin, Navigation } from 'lucide-react';
-import { Place } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { ChevronLeft, ChevronRight, MapPin, Navigation } from "lucide-react";
+import { Place } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
 
 interface PlaceCardProps {
   place: Place;
@@ -14,7 +14,6 @@ interface PlaceCardProps {
 
 export default function PlaceCard({
   place,
-  userLocation,
   distance,
   phnomPenhDistance,
   showingPhnomPenhDistance,
@@ -22,25 +21,23 @@ export default function PlaceCard({
   const { i18n, t } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const isKhmer = i18n.language === 'km';
+  const isKhmer = i18n.language === "km";
   const name = isKhmer ? place.name_km : place.name_en;
   const province = isKhmer ? place.province_km : place.province_en;
 
   const nextImage = () => {
-    setCurrentImageIndex(
-      (prev) => (prev + 1) % (place.images?.length || 1)
-    );
+    setCurrentImageIndex((prev) => (prev + 1) % (place.images?.length || 1));
   };
 
   const prevImage = () => {
     setCurrentImageIndex(
       (prev) =>
-        (prev - 1 + (place.images?.length || 1)) % (place.images?.length || 1)
+        (prev - 1 + (place.images?.length || 1)) % (place.images?.length || 1),
     );
   };
 
   const handleOpenMaps = () => {
-    window.open(place.map_link, '_blank');
+    window.open(place.map_link, "_blank");
   };
 
   return (
@@ -100,16 +97,20 @@ export default function PlaceCard({
         {distance !== undefined ? (
           <div className="flex items-center gap-2 text-sm font-medium text-primary">
             <Navigation className="h-4 w-4" />
-            <span>{distance.toFixed(1)} {t('km')}</span>
+            <span>
+              {distance.toFixed(1)} {t("km")}
+            </span>
           </div>
         ) : showingPhnomPenhDistance && phnomPenhDistance !== undefined ? (
           <div className="flex items-center gap-2 text-sm font-medium text-secondary">
             <Navigation className="h-4 w-4" />
-            <span className="text-xs">From Phnom Penh: {phnomPenhDistance.toFixed(1)} {t('km')}</span>
+            <span className="text-xs">
+              From Phnom Penh: {phnomPenhDistance.toFixed(1)} {t("km")}
+            </span>
           </div>
         ) : (
           <div className="text-xs text-muted-foreground italic">
-            {t('enableLocation')}
+            {t("enableLocation")}
           </div>
         )}
 
@@ -118,7 +119,7 @@ export default function PlaceCard({
           onClick={handleOpenMaps}
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
         >
-          {t('openInMaps')}
+          {t("openInMaps")}
         </Button>
       </div>
     </div>

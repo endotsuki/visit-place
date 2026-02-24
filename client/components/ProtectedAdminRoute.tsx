@@ -1,22 +1,30 @@
-import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { checkAdminAccess } from '@/lib/auth';
-import { Loader } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { checkAdminAccess } from "@/lib/auth";
+import { Loader } from "lucide-react";
+import { useLocation } from "wouter";
 
 interface ProtectedAdminRouteProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
+export default function ProtectedAdminRoute({
+  children,
+}: ProtectedAdminRouteProps) {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [, navigate] = useLocation();
 
   useEffect(() => {
     const checkAdmin = async () => {
       const adminUser = await checkAdminAccess();
-      setIsAdmin(!!adminUser);
+      if (!adminUser) {
+        navigate("/"); // redirect if not admin
+      } else {
+        setIsAdmin(true);
+      }
     };
+
     checkAdmin();
-  }, []);
+  }, [navigate]);
 
   if (isAdmin === null) {
     return (
@@ -24,10 +32,6 @@ export default function ProtectedAdminRoute({ children }: ProtectedAdminRoutePro
         <Loader className="h-12 w-12 text-primary animate-spin" />
       </div>
     );
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

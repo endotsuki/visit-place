@@ -6,7 +6,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Route, Switch } from "wouter";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { initTheme } from "@/lib/theme";
@@ -30,13 +30,12 @@ const RootApp = () => {
   }, [i18n]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/admin/login" element={<AdminLogin />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Switch>
+      <Route path="/" component={Index} />
+      <Route path="/admin" component={Admin} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route component={NotFound} /> {/* catch-all */}
+    </Switch>
   );
 };
 
@@ -45,9 +44,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <RootApp />
-      </BrowserRouter>
+      <RootApp />
     </TooltipProvider>
   </QueryClientProvider>
 );

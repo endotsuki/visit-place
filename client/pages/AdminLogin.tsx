@@ -1,28 +1,30 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Loader, AlertCircle } from 'lucide-react';
-import Layout from '@/components/Layout';
-import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Loader, AlertCircle } from "lucide-react";
+import Layout from "@/components/Layout";
+import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 export default function AdminLogin() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [, navigate] = useLocation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Check if already logged in
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         // User is logged in, redirect to admin
-        navigate('/admin');
+        navigate("/admin");
       }
     };
     checkAuth();
@@ -30,7 +32,7 @@ export default function AdminLogin() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -40,16 +42,16 @@ export default function AdminLogin() {
       });
 
       if (signInError) {
-        setError('Invalid email or password');
-        toast.error('Login failed');
+        setError("Invalid email or password");
+        toast.error("Login failed");
       } else {
-        toast.success('Login successful');
-        navigate('/admin');
+        toast.success("Login successful");
+        navigate("/admin");
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('An error occurred. Please try again.');
-      toast.error('Login error');
+      console.error("Login error:", err);
+      setError("An error occurred. Please try again.");
+      toast.error("Login error");
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ export default function AdminLogin() {
                 <span className="text-white font-bold text-2xl">🔐</span>
               </div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t('admin')} Login
+                {t("admin")} Login
               </h1>
               <p className="text-muted-foreground">
                 Enter your credentials to access the dashboard
@@ -125,7 +127,7 @@ export default function AdminLogin() {
                     Logging in...
                   </>
                 ) : (
-                  'Login'
+                  "Login"
                 )}
               </Button>
             </form>
@@ -137,7 +139,8 @@ export default function AdminLogin() {
               </p>
               <div className="p-3 bg-muted/30 rounded-lg border border-border/50">
                 <p className="text-xs text-muted-foreground text-center">
-                  <strong>Demo:</strong> Only users with "admin" role in Supabase can login here.
+                  <strong>Demo:</strong> Only users with "admin" role in
+                  Supabase can login here.
                 </p>
               </div>
             </div>

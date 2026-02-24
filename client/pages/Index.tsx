@@ -194,7 +194,7 @@ export default function Index() {
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {isKhmer
-                ? "ស្វាគមន៍មកកាន់ប្រទេសកម្ពុជា។ ស្វាយលាក់ដើម្បីរកឃើញកន្លែងទេសចរណ៍ដ៏ស្អាត"
+                ? "ស្វាគមន៍មកកាន់ប្រទេសកម្ពុជា។ ស្វែងរកដើម្បីរកឃើញកន្លែងទេសចរណ៍ដ៏ស្អាត"
                 : "Explore the beautiful destinations across Cambodia. Search to discover amazing places."}
             </p>
           </div>
@@ -245,33 +245,6 @@ export default function Index() {
               />
             </div>
           </div>
-
-          {/* Location Permission */}
-          {!userLocation && (
-            <div className="mb-8 p-4 bg-secondary/10 border border-secondary/20 rounded-lg flex items-start gap-3">
-              <MapPin className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold text-secondary mb-2">
-                  {t("enableLocation")}
-                </p>
-                <Button
-                  onClick={() => {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                      setUserLocation({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                    });
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="border-secondary text-secondary hover:bg-secondary/10"
-                >
-                  {t("enableLocation")}
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Results Section */}
