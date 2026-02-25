@@ -5,6 +5,15 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Layout from "@/components/Layout";
 import PlaceCard from "@/components/PlaceCard";
 import { supabase, Place } from "@/lib/supabase";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // ─── Animation presets ────────────────────────────────────────────
 // Cubic bezier must be typed as a const tuple for framer-motion's Easing type
@@ -300,33 +309,31 @@ export default function Index() {
                 className="overflow-hidden"
               >
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <select
+                  <Select
                     value={province}
-                    onChange={(e) => setProvince(e.target.value)}
-                    className="h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200 outline-none transition duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                    onValueChange={(value) => setProvince(value)}
                   >
-                    <option value="all">
-                      {t("ខេត្តទាំងអស់", "All Provinces")}
-                    </option>
-                    {Array.from(provinces)
-                      .sort()
-                      .map((p) => (
-                        <option key={p} value={p}>
-                          {p}
-                        </option>
-                      ))}
-                  </select>
+                    <SelectTrigger className="w-full h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500">
+                      <SelectValue
+                        placeholder={t("ជ្រើសរើសខេត្ត", "Select a province")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="bg-stone-900 border border-stone-700 text-stone-200">
+                      <SelectGroup>
+                        <SelectItem value="all">
+                          {t("ខេត្តទាំងអស់", "All Provinces")}
+                        </SelectItem>
 
-                  {/* <input
-                    type="text"
-                    placeholder={t(
-                      "ស្វែងរកតាមពាក្យគន្លឹះ…",
-                      "Search by keyword…",
-                    )}
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    className="h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-white placeholder-stone-500 outline-none transition duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                  /> */}
+                        {Array.from(provinces)
+                          .sort()
+                          .map((p) => (
+                            <SelectItem key={p} value={p}>
+                              {p}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <AnimatePresence>
