@@ -85,14 +85,14 @@ export default function Layout({ children }: Props) {
           <div className="flex h-16 items-center justify-between gap-4">
             {/* Brand */}
             <Link to="/" className="group flex shrink-0 items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-md shadow-amber-200 dark:shadow-amber-900/40 transition-transform duration-200 group-hover:scale-105">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-orange-600 shadow-md shadow-primary dark:shadow-primary/40 transition-transform duration-200 group-hover:scale-105">
                 <span className="select-none text-lg leading-none">🇰🇭</span>
               </div>
               <div className="hidden sm:block leading-none">
                 <span className="block text-[15px] font-bold tracking-tight text-stone-900 dark:text-stone-100">
                   Discover
                 </span>
-                <span className="block mt-0.5 text-[11px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                <span className="block mt-0.5 text-[11px] font-semibold uppercase tracking-widest text-primary dark:text-primary/80">
                   Cambodia
                 </span>
               </div>
@@ -106,13 +106,13 @@ export default function Layout({ children }: Props) {
                   to={to}
                   className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     location === to
-                      ? "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50"
+                      ? "text-primary dark:text-primary/80 bg-primary/10 dark:bg-primary/20"
                       : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800"
                   }`}
                 >
                   {label}
                   {location === to && (
-                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-amber-500" />
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-primary" />
                   )}
                 </Link>
               ))}
@@ -141,7 +141,7 @@ export default function Layout({ children }: Props) {
                     onClick={() => changeLanguage(lang)}
                     className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 ${
                       i18n.language === lang
-                        ? "bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-300 shadow-sm"
+                        ? "bg-white dark:bg-stone-700 text-primary dark:text-primary/80 shadow-sm"
                         : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
                     }`}
                   >
@@ -200,7 +200,7 @@ export default function Layout({ children }: Props) {
                     onClick={() => setMenuOpen(false)}
                     className={`flex items-center rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                       location === to
-                        ? "bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400"
+                        ? "bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary/80"
                         : "text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
                     }`}
                   >
@@ -234,7 +234,7 @@ export default function Layout({ children }: Props) {
                         }}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           i18n.language === lang
-                            ? "bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-300 shadow-sm"
+                            ? "bg-white dark:bg-stone-700 text-primary dark:text-primary/80 shadow-sm"
                             : "text-stone-500 dark:text-stone-400"
                         }`}
                       >

@@ -47,7 +47,7 @@ function Field({
 }
 
 const inputCls =
-  "h-10 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20";
+  "h-10 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20";
 const textareaCls = `${inputCls} h-auto py-2.5 resize-none`;
 
 // Upload image to Cloudinary — store raw URL, transform via URL API at display time
@@ -320,7 +320,7 @@ export default function AdminForm({ place, onClose }: Props) {
             whileTap={{ scale: 0.98 }}
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="inline-flex items-center gap-2 rounded-xl border border-dashed border-stone-300 dark:border-stone-600 bg-stone-50 dark:bg-stone-800/50 px-4 py-2.5 text-sm font-medium text-stone-500 dark:text-stone-400 hover:border-amber-500 hover:text-amber-600 dark:hover:border-amber-500 dark:hover:text-amber-400 transition disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-dashed border-stone-300 dark:border-stone-600 bg-stone-50 dark:bg-stone-800/50 px-4 py-2.5 text-sm font-medium text-stone-500 dark:text-stone-400 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition disabled:opacity-50"
           >
             {uploading ? (
               <HugeiconsIcon
@@ -381,7 +381,7 @@ export default function AdminForm({ place, onClose }: Props) {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           disabled={saving || images.length === 0}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 dark:hover:bg-amber-400 transition disabled:opacity-50"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-white hover:bg-primary/90 dark:hover:bg-primary/80 transition disabled:opacity-50"
         >
           {saving && (
             <HugeiconsIcon

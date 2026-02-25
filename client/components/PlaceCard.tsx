@@ -123,7 +123,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
           <h3 className="line-clamp-2 text-base font-bold leading-snug text-stone-800 dark:text-stone-100">
             {name}
           </h3>
-          <p className="mt-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+          <p className="mt-0.5 text-xs font-semibold text-primary dark:text-primary/80">
             {province}
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
           <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
             <HugeiconsIcon
               icon={Navigation03Icon}
-              className="h-3.5 w-3.5 text-amber-500"
+              className="h-3.5 w-3.5 text-primary"
             />
             <span>
               {place.distance_from_pp} km{" "}
@@ -147,7 +147,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => window.open(place.map_link, "_blank")}
-          className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 transition-colors duration-200"
+          className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 dark:hover:bg-primary/80 transition-colors duration-200"
         >
           <HugeiconsIcon icon={MapsSquare02Icon} className="h-4 w-4" />
           {isKhmer ? "បើកក្នុងផែនទី" : "Open in Maps"}

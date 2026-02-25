@@ -9,7 +9,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 
 // Shared input style (consistent with AdminForm)
 const inputCls =
-  "h-11 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-4 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50";
+  "h-11 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-4 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50";
 
 export default function AdminLogin() {
   const [, navigate] = useLocation();
@@ -57,12 +57,12 @@ export default function AdminLogin() {
           {/* Card */}
           <div className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 shadow-xl shadow-stone-200/50 dark:shadow-stone-950/50 overflow-hidden">
             {/* Top accent bar */}
-            <div className="h-1 w-full bg-gradient-to-r from-amber-400 to-orange-500" />
+            <div className="h-1 w-full bg-gradient-to-r from-primary to-primary/80" />
 
             <div className="px-8 py-8">
               {/* Icon + heading */}
               <div className="mb-7 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-200 dark:shadow-amber-900/40">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20 dark:shadow-primary/40">
                   <span className="text-2xl select-none">🔐</span>
                 </div>
                 <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
@@ -130,7 +130,7 @@ export default function AdminLogin() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   disabled={loading || !email || !password}
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition disabled:opacity-50"
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition disabled:opacity-50"
                 >
                   {loading && (
                     <HugeiconsIcon

@@ -73,7 +73,7 @@ export default function Admin() {
         <div className="flex h-[60vh] items-center justify-center">
           <HugeiconsIcon
             icon={Loading03Icon}
-            className="h-8 w-8 animate-spin text-amber-500"
+            className="h-8 w-8 animate-spin text-primary"
           />
         </div>
       </Layout>
@@ -97,7 +97,7 @@ export default function Admin() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition"
             >
               <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />{" "}
               {t("addPlace")}
@@ -129,7 +129,7 @@ export default function Admin() {
           <div className="flex h-40 items-center justify-center">
             <HugeiconsIcon
               icon={Loading03Icon}
-              className="h-7 w-7 animate-spin text-amber-500"
+              className="h-7 w-7 animate-spin text-primary"
             />
           </div>
         ) : places.length === 0 ? (
@@ -139,7 +139,7 @@ export default function Admin() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition"
             >
               <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />{" "}
               {t("addPlace")}
@@ -217,7 +217,7 @@ export default function Admin() {
                       setEditingPlace(place);
                       setShowForm(false);
                     }}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 dark:border-stone-600 px-3 py-2 text-xs font-medium text-stone-600 dark:text-stone-300 hover:border-amber-500 hover:text-amber-600 dark:hover:text-amber-400 transition"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 dark:border-stone-600 px-3 py-2 text-xs font-medium text-stone-600 dark:text-stone-300 hover:border-primary hover:text-primary dark:hover:text-primary/80 transition"
                   >
                     <HugeiconsIcon icon={Edit02Icon} className="h-3.5 w-3.5" />{" "}
                     {t("editPlace")}
