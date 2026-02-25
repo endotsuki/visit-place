@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, MapPin, Loader, SlidersHorizontal, X } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Layout from "@/components/Layout";
 import PlaceCard from "@/components/PlaceCard";
@@ -10,10 +9,17 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  FilterHorizontalIcon,
+  Loading03Icon,
+  MapsSquare01Icon,
+  Search01Icon,
+} from "@hugeicons/core-free-icons";
 
 // ─── Animation presets ────────────────────────────────────────────
 // Cubic bezier must be typed as a const tuple for framer-motion's Easing type
@@ -69,11 +75,11 @@ function FilterChip({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
-      className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-400"
+      className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary"
     >
       {label}
       <button onClick={onRemove} className="hover:opacity-70 transition">
-        <X className="h-3 w-3" />
+        <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
       </button>
     </motion.span>
   );
@@ -168,11 +174,11 @@ export default function Index() {
         {/* Background glow */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-40 -left-40 h-[560px] w-[560px] rounded-full bg-amber-600/10 blur-[100px]"
+          className="pointer-events-none absolute -top-40 -left-40 h-[560px] w-[560px] rounded-full bg-primary/40 blur-[100px]"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-20 right-0 h-[400px] w-[400px] rounded-full bg-amber-500/8 blur-[80px]"
+          className="pointer-events-none absolute -bottom-20 right-0 h-[400px] w-[400px] rounded-full bg-primary/20 blur-[80px]"
         />
 
         <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
@@ -182,9 +188,9 @@ export default function Index() {
             initial="hidden"
             animate="show"
             custom={0}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-400"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary"
           >
-            <MapPin className="h-3 w-3" />
+            <HugeiconsIcon icon={MapsSquare01Icon} className="h-3 w-3" />
             {t("ស្វែករកកន្លែង", "Discover Cambodia")}
           </motion.p>
 
@@ -206,7 +212,7 @@ export default function Index() {
               <>
                 Find Your Next
                 <br className="hidden sm:block" />
-                <span className="text-amber-400">Adventure</span>
+                <span className="text-primary">Adventure</span>
               </>
             )}
           </motion.h1>
@@ -235,7 +241,10 @@ export default function Index() {
           >
             {/* Search input */}
             <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
+              <HugeiconsIcon
+                icon={Search01Icon}
+                className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500"
+              />
               <input
                 type="text"
                 placeholder={t(
@@ -244,15 +253,8 @@ export default function Index() {
                 )}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-14 w-full rounded-2xl border border-stone-700 bg-stone-900/80 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none backdrop-blur-sm transition-all duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 sm:text-base"
+                className="h-14 w-full rounded-2xl border border-stone-700 bg-stone-900/80 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 sm:text-base"
               />
-              {/* <input
-                type="text"
-                placeholder={t("ស្វែងរកតាមពាក្យគន្លឹះ…", "Search by keyword…")}
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                className="h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-white placeholder-stone-500 outline-none transition duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-              /> */}
               <AnimatePresence>
                 {query && (
                   <motion.button
@@ -262,7 +264,7 @@ export default function Index() {
                     onClick={() => setQuery("")}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-white transition"
                   >
-                    <X className="h-4 w-4" />
+                    <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
                   </motion.button>
                 )}
               </AnimatePresence>
@@ -275,11 +277,11 @@ export default function Index() {
               onClick={() => setShowFilters((v) => !v)}
               className={`inline-flex h-14 shrink-0 items-center gap-2 rounded-2xl border px-6 text-sm font-medium transition-all duration-200 ${
                 showFilters || hasFilters
-                  ? "border-amber-500 bg-amber-500/15 text-amber-400 shadow-lg shadow-amber-500/10"
+                  ? "border-primary bg-primary/15 text-primary shadow-lg shadow-primary/10"
                   : "border-stone-700 bg-stone-900/80 text-stone-300 hover:border-stone-500 hover:text-white"
               }`}
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <HugeiconsIcon icon={FilterHorizontalIcon} className="h-4 w-4" />
               {t("តម្រង", "Filters")}
               <AnimatePresence>
                 {hasFilters && (
@@ -288,7 +290,7 @@ export default function Index() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="ml-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-stone-950"
+                    className="ml-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-stone-950"
                   >
                     {(province !== "all" ? 1 : 0) + (query.trim() ? 1 : 0)}
                   </motion.span>
@@ -313,7 +315,7 @@ export default function Index() {
                     value={province}
                     onValueChange={(value) => setProvince(value)}
                   >
-                    <SelectTrigger className="w-full h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500">
+                    <SelectTrigger className="w-full h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200 focus:ring-2 focus:ring-primary/20 focus:border-primary">
                       <SelectValue
                         placeholder={t("ជ្រើសរើសខេត្ត", "Select a province")}
                       />
@@ -343,7 +345,7 @@ export default function Index() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       onClick={clearFilters}
-                      className="mt-3 text-xs text-stone-500 underline underline-offset-2 hover:text-amber-400 transition"
+                      className="mt-3 text-xs text-stone-500 underline underline-offset-2 hover:text-primary transition"
                     >
                       {t("លុបតម្រងទាំងអស់", "Clear all filters")}
                     </motion.button>
@@ -361,8 +363,11 @@ export default function Index() {
           {/* Loading */}
           {loading && (
             <CenteredState>
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-amber-500/20 bg-amber-500/5">
-                <Loader className="h-7 w-7 animate-spin text-amber-500" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/20 bg-primary/5">
+                <HugeiconsIcon
+                  icon={Loading03Icon}
+                  className="h-7 w-7 animate-spin text-primary"
+                />
               </div>
               <p className="text-sm font-medium tracking-wide text-stone-400 dark:text-stone-500">
                 {t("កំពុងផ្ទុក…", "Loading destinations…")}
@@ -379,7 +384,10 @@ export default function Index() {
             >
               <CenteredState>
                 <div className="flex h-20 w-20 items-center justify-center rounded-full border border-stone-200 bg-stone-100 dark:border-stone-700 dark:bg-stone-800">
-                  <MapPin className="h-8 w-8 text-stone-300 dark:text-stone-600" />
+                  <HugeiconsIcon
+                    icon={MapsSquare01Icon}
+                    className="h-8 w-8 text-stone-300 dark:text-stone-600"
+                  />
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-stone-700 dark:text-stone-300">
@@ -397,7 +405,7 @@ export default function Index() {
                     whileHover={reduceMotion ? {} : { scale: 1.03 }}
                     whileTap={reduceMotion ? {} : { scale: 0.97 }}
                     onClick={clearFilters}
-                    className="mt-1 rounded-xl border border-stone-300 dark:border-stone-700 px-5 py-2.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:border-amber-500 hover:text-amber-600 dark:hover:border-amber-500 dark:hover:text-amber-400 transition"
+                    className="mt-1 rounded-xl border border-stone-300 dark:border-stone-700 px-5 py-2.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition"
                   >
                     {t("លុបតម្រង", "Clear filters")}
                   </motion.button>

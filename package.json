@@ -21,6 +21,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@hugeicons/core-free-icons": "^3.1.1",
+    "@hugeicons/react": "^1.1.5",
     "@supabase/supabase-js": "^2.97.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
@@ -82,7 +84,6 @@
     "framer-motion": "^12.23.12",
     "globals": "^16.3.0",
     "input-otp": "^1.4.2",
-    "lucide-react": "^0.539.0",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",

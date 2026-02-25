@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, MapPin, Navigation } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Place } from "@/lib/supabase";
 import { cloudinaryUrl } from "@/components/AdminForm";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  MapsSquare02Icon,
+  Navigation03Icon,
+} from "@hugeicons/core-free-icons";
 
 interface PlaceCardProps {
   place: Place;
@@ -72,13 +78,13 @@ export default function PlaceCard({ place }: PlaceCardProps) {
                   onClick={goPrev}
                   className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/40 p-1.5 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-black/60"
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
                 </button>
                 <button
                   onClick={goNext}
                   className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/40 p-1.5 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-black/60"
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
                 </button>
 
                 {/* Dot indicators */}
@@ -102,7 +108,10 @@ export default function PlaceCard({ place }: PlaceCardProps) {
         ) : (
           // Fallback when no images
           <div className="flex h-full items-center justify-center">
-            <MapPin className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+            <HugeiconsIcon
+              icon={MapsSquare02Icon}
+              className="h-10 w-10 text-stone-300 dark:text-stone-600"
+            />
           </div>
         )}
       </div>
@@ -122,7 +131,10 @@ export default function PlaceCard({ place }: PlaceCardProps) {
         {/* Distance from Phnom Penh */}
         {place.distance_from_pp != null && place.distance_from_pp > 0 && (
           <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
-            <Navigation className="h-3.5 w-3.5 text-amber-500" />
+            <HugeiconsIcon
+              icon={Navigation03Icon}
+              className="h-3.5 w-3.5 text-amber-500"
+            />
             <span>
               {place.distance_from_pp} km{" "}
               {isKhmer ? "ពីភ្នំពេញ" : "from Phnom Penh"}
@@ -137,7 +149,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
           onClick={() => window.open(place.map_link, "_blank")}
           className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 transition-colors duration-200"
         >
-          <MapPin className="h-4 w-4" />
+          <HugeiconsIcon icon={MapsSquare02Icon} className="h-4 w-4" />
           {isKhmer ? "បើកក្នុងផែនទី" : "Open in Maps"}
         </motion.button>
       </div>

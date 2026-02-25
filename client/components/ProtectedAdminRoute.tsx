@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { checkAdminAccess } from "@/lib/auth";
-import { Loader } from "lucide-react";
 import { useLocation } from "wouter";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Loading03Icon } from "@hugeicons/core-free-icons";
 
 interface ProtectedAdminRouteProps {
   children: React.ReactNode;
@@ -29,7 +30,10 @@ export default function ProtectedAdminRoute({
   if (isAdmin === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader className="h-12 w-12 text-primary animate-spin" />
+        <HugeiconsIcon
+          icon={Loading03Icon}
+          className="h-12 w-12 text-primary animate-spin"
+        />
       </div>
     );
   }

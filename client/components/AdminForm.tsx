@@ -1,9 +1,14 @@
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader, X, ImagePlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase, Place } from "@/lib/supabase";
 import { toast } from "sonner";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  ImageAdd02Icon,
+  Loading03Icon,
+} from "@hugeicons/core-free-icons";
 
 // ─── Types ────────────────────────────────────────────────────────
 interface Props {
@@ -175,7 +180,7 @@ export default function AdminForm({ place, onClose }: Props) {
           onClick={onClose}
           className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-600 dark:hover:text-stone-300 transition"
         >
-          <X className="h-5 w-5" />
+          <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
         </button>
       </div>
 
@@ -318,9 +323,12 @@ export default function AdminForm({ place, onClose }: Props) {
             className="inline-flex items-center gap-2 rounded-xl border border-dashed border-stone-300 dark:border-stone-600 bg-stone-50 dark:bg-stone-800/50 px-4 py-2.5 text-sm font-medium text-stone-500 dark:text-stone-400 hover:border-amber-500 hover:text-amber-600 dark:hover:border-amber-500 dark:hover:text-amber-400 transition disabled:opacity-50"
           >
             {uploading ? (
-              <Loader className="h-4 w-4 animate-spin" />
+              <HugeiconsIcon
+                icon={Loading03Icon}
+                className="h-4 w-4 animate-spin"
+              />
             ) : (
-              <ImagePlus className="h-4 w-4" />
+              <HugeiconsIcon icon={ImageAdd02Icon} className="h-4 w-4" />
             )}
             {uploading ? "Uploading…" : "Upload Images"}
           </motion.button>
@@ -353,7 +361,10 @@ export default function AdminForm({ place, onClose }: Props) {
                       }
                       className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition"
                     >
-                      <X className="h-5 w-5 text-white" />
+                      <HugeiconsIcon
+                        icon={Cancel01Icon}
+                        className="h-5 w-5 text-white"
+                      />
                     </button>
                   </motion.div>
                 ))}
@@ -372,7 +383,12 @@ export default function AdminForm({ place, onClose }: Props) {
           disabled={saving || images.length === 0}
           className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 dark:hover:bg-amber-400 transition disabled:opacity-50"
         >
-          {saving && <Loader className="h-4 w-4 animate-spin" />}
+          {saving && (
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="h-4 w-4 animate-spin"
+            />
+          )}
           {saving ? "Saving…" : t("save")}
         </motion.button>
 

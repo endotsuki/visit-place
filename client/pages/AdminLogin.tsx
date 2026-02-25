@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Loader, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Layout from "@/components/Layout";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { AlertCircle, Loading03Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 // Shared input style (consistent with AdminForm)
 const inputCls =
@@ -82,7 +83,10 @@ export default function AdminLogin() {
                     className="mb-5 overflow-hidden"
                   >
                     <div className="flex items-start gap-2.5 rounded-xl border border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm text-red-600 dark:text-red-400">
-                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                      <HugeiconsIcon
+                        icon={AlertCircle}
+                        className="mt-0.5 h-4 w-4 shrink-0"
+                      />
                       {error}
                     </div>
                   </motion.div>
@@ -128,7 +132,12 @@ export default function AdminLogin() {
                   disabled={loading || !email || !password}
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition disabled:opacity-50"
                 >
-                  {loading && <Loader className="h-4 w-4 animate-spin" />}
+                  {loading && (
+                    <HugeiconsIcon
+                      icon={Loading03Icon}
+                      className="h-4 w-4 animate-spin"
+                    />
+                  )}
                   {loading ? "Signing in…" : "Sign in"}
                 </motion.button>
               </form>

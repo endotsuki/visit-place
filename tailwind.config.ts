@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        khmer: ['Inter Khmer Looped', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        khmer: ["Inter Khmer Looped", "serif"],
+        sans: ["Inter", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -24,12 +24,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsl(220, 85%, 45%)",
+          foreground: "hsl(0, 0%, 100%)",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "hsl(342, 78%, 57%)",
+          foreground: "hsl(0, 0%, 100%)",
+        },
+        accent: {
+          DEFAULT: "hsl(48, 100%, 55%)",
+          foreground: "hsl(0, 0%, 0%)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -38,10 +42,6 @@ export default {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

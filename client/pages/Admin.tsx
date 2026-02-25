@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Edit2, Trash2, Loader, ImageIcon, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Layout from "@/components/Layout";
 import AdminForm from "@/components/AdminForm";
 import { supabase, Place } from "@/lib/supabase";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
+import {
+  Delete01Icon,
+  Edit02Icon,
+  Image01Icon,
+  Loading03Icon,
+  PlusSignIcon,
+  Tag01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 export default function Admin() {
   const { t } = useTranslation();
@@ -63,7 +71,10 @@ export default function Admin() {
     return (
       <Layout>
         <div className="flex h-[60vh] items-center justify-center">
-          <Loader className="h-8 w-8 animate-spin text-amber-500" />
+          <HugeiconsIcon
+            icon={Loading03Icon}
+            className="h-8 w-8 animate-spin text-amber-500"
+          />
         </div>
       </Layout>
     );
@@ -88,7 +99,8 @@ export default function Admin() {
               onClick={() => setShowForm(true)}
               className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition"
             >
-              <Plus className="h-4 w-4" /> {t("addPlace")}
+              <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />{" "}
+              {t("addPlace")}
             </motion.button>
           )}
         </div>
@@ -115,7 +127,10 @@ export default function Admin() {
         {/* Places list */}
         {loading ? (
           <div className="flex h-40 items-center justify-center">
-            <Loader className="h-7 w-7 animate-spin text-amber-500" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="h-7 w-7 animate-spin text-amber-500"
+            />
           </div>
         ) : places.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-stone-300 dark:border-stone-700 py-20 text-center">
@@ -126,7 +141,8 @@ export default function Admin() {
               onClick={() => setShowForm(true)}
               className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition"
             >
-              <Plus className="h-4 w-4" /> {t("addPlace")}
+              <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />{" "}
+              {t("addPlace")}
             </motion.button>
           </div>
         ) : (
@@ -161,7 +177,10 @@ export default function Admin() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
-                        <ImageIcon className="h-5 w-5 text-stone-300 dark:text-stone-600" />
+                        <HugeiconsIcon
+                          icon={Image01Icon}
+                          className="h-5 w-5 text-stone-300 dark:text-stone-600"
+                        />
                       </div>
                     )}
                   </div>
@@ -178,11 +197,11 @@ export default function Admin() {
                     </p>
                     <div className="mt-1 flex items-center gap-3 text-xs text-stone-400 dark:text-stone-500">
                       <span className="flex items-center gap-1">
-                        <ImageIcon className="h-3 w-3" />
+                        <HugeiconsIcon icon={Image01Icon} className="h-3 w-3" />
                         {place.images?.length ?? 0}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Tag className="h-3 w-3" />
+                        <HugeiconsIcon icon={Tag01Icon} className="h-3 w-3" />
                         {place.keywords.length}
                       </span>
                     </div>
@@ -200,7 +219,8 @@ export default function Admin() {
                     }}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 dark:border-stone-600 px-3 py-2 text-xs font-medium text-stone-600 dark:text-stone-300 hover:border-amber-500 hover:text-amber-600 dark:hover:text-amber-400 transition"
                   >
-                    <Edit2 className="h-3.5 w-3.5" /> {t("editPlace")}
+                    <HugeiconsIcon icon={Edit02Icon} className="h-3.5 w-3.5" />{" "}
+                    {t("editPlace")}
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
@@ -208,7 +228,11 @@ export default function Admin() {
                     onClick={() => deletePlace(place.id)}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 dark:border-stone-600 px-3 py-2 text-xs font-medium text-stone-600 dark:text-stone-300 hover:border-red-400 hover:text-red-500 dark:hover:text-red-400 transition"
                   >
-                    <Trash2 className="h-3.5 w-3.5" /> {t("deletePlace")}
+                    <HugeiconsIcon
+                      icon={Delete01Icon}
+                      className="h-3.5 w-3.5"
+                    />{" "}
+                    {t("deletePlace")}
                   </motion.button>
                 </div>
               </motion.li>

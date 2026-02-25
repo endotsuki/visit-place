@@ -1,10 +1,17 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LogOut, Menu, X, Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { getTheme, setTheme } from "@/lib/theme";
 import { Link, useLocation } from "wouter";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  LogoutSquare01Icon,
+  Menu01Icon,
+  Moon02Icon,
+  Sun01Icon,
+} from "@hugeicons/core-free-icons";
 
 // ─── Types ────────────────────────────────────────────────────────
 interface Props {
@@ -120,9 +127,9 @@ export default function Layout({ children }: Props) {
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100 transition"
               >
                 {theme === "light" ? (
-                  <Moon className="h-4 w-4" />
+                  <HugeiconsIcon icon={Moon02Icon} className="h-4 w-4" />
                 ) : (
-                  <Sun className="h-4 w-4" />
+                  <HugeiconsIcon icon={Sun01Icon} className="h-4 w-4" />
                 )}
               </button>
 
@@ -149,7 +156,11 @@ export default function Layout({ children }: Props) {
                   onClick={signOut}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-stone-500 dark:text-stone-400 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition"
                 >
-                  <LogOut className="h-3.5 w-3.5" /> Sign out
+                  <HugeiconsIcon
+                    icon={LogoutSquare01Icon}
+                    className="h-3.5 w-3.5"
+                  />{" "}
+                  Sign out
                 </button>
               )}
             </div>
@@ -161,9 +172,9 @@ export default function Layout({ children }: Props) {
               className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition"
             >
               {menuOpen ? (
-                <X className="h-5 w-5" />
+                <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
               ) : (
-                <Menu className="h-5 w-5" />
+                <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
               )}
             </button>
           </div>
@@ -205,9 +216,9 @@ export default function Layout({ children }: Props) {
                     className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition"
                   >
                     {theme === "light" ? (
-                      <Moon className="h-4 w-4" />
+                      <HugeiconsIcon icon={Moon02Icon} className="h-4 w-4" />
                     ) : (
-                      <Sun className="h-4 w-4" />
+                      <HugeiconsIcon icon={Sun01Icon} className="h-4 w-4" />
                     )}
                     {theme === "light" ? "Dark mode" : "Light mode"}
                   </button>
@@ -241,7 +252,11 @@ export default function Layout({ children }: Props) {
                       }}
                       className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
                     >
-                      <LogOut className="h-4 w-4" /> Sign out
+                      <HugeiconsIcon
+                        icon={LogoutSquare01Icon}
+                        className="h-4 w-4"
+                      />{" "}
+                      Sign out
                     </button>
                   )}
                 </div>
