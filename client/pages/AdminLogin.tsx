@@ -1,156 +1,149 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { Loader, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Layout from "@/components/Layout";
 import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
+// Shared input style (consistent with AdminForm)
+const inputCls =
+  "h-11 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-4 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50";
+
 export default function AdminLogin() {
-  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Check if already logged in
+  // Redirect if already logged in
   useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        // User is logged in, redirect to admin
-        navigate("/admin");
-      }
-    };
-    checkAuth();
-  }, [navigate]);
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) navigate("/admin");
+    });
+  }, []);
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { error: err } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (signInError) {
-        setError("Invalid email or password");
-        toast.error("Login failed");
-      } else {
-        toast.success("Login successful");
-        navigate("/admin");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("An error occurred. Please try again.");
-      toast.error("Login error");
-    } finally {
-      setLoading(false);
+    if (err) {
+      setError("Invalid email or password");
+      toast.error("Login failed");
+    } else {
+      toast.success("Welcome back!");
+      navigate("/admin");
     }
-  };
+    setLoading(false);
+  }
 
   return (
     <Layout>
-      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gradient-to-b from-primary/5 to-secondary/5 px-4">
-        <div className="w-full max-w-md">
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-stone-50 dark:bg-stone-950 px-4 transition-colors duration-300">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-sm"
+        >
           {/* Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-border">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary mx-auto mb-4">
-                <span className="text-white font-bold text-2xl">🔐</span>
-              </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t("admin")} Login
-              </h1>
-              <p className="text-muted-foreground">
-                Enter your credentials to access the dashboard
-              </p>
-            </div>
+          <div className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 shadow-xl shadow-stone-200/50 dark:shadow-stone-950/50 overflow-hidden">
+            {/* Top accent bar */}
+            <div className="h-1 w-full bg-gradient-to-r from-amber-400 to-orange-500" />
 
-            {/* Error Message */}
-            {error && (
-              <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex gap-3">
-                <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-destructive">{error}</p>
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Email Address
-                </label>
-                <Input
-                  type="email"
-                  placeholder="admin@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-12"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Password
-                </label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-12"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading || !email || !password}
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base"
-              >
-                {loading ? (
-                  <>
-                    <Loader className="h-4 w-4 animate-spin mr-2" />
-                    Logging in...
-                  </>
-                ) : (
-                  "Login"
-                )}
-              </Button>
-            </form>
-
-            {/* Help Text */}
-            <div className="mt-8 pt-6 border-t border-border">
-              <p className="text-xs text-muted-foreground text-center mb-3">
-                Need admin access? Contact your site administrator.
-              </p>
-              <div className="p-3 bg-muted/30 rounded-lg border border-border/50">
-                <p className="text-xs text-muted-foreground text-center">
-                  <strong>Demo:</strong> Only users with "admin" role in
-                  Supabase can login here.
+            <div className="px-8 py-8">
+              {/* Icon + heading */}
+              <div className="mb-7 text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-200 dark:shadow-amber-900/40">
+                  <span className="text-2xl select-none">🔐</span>
+                </div>
+                <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+                  Admin Login
+                </h1>
+                <p className="mt-1 text-sm text-stone-400 dark:text-stone-500">
+                  Enter your credentials to continue
                 </p>
               </div>
+
+              {/* Error banner */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-5 overflow-hidden"
+                  >
+                    <div className="flex items-start gap-2.5 rounded-xl border border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                      {error}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Form */}
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="admin@example.com"
+                    required
+                    disabled={loading}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    required
+                    disabled={loading}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={loading || !email || !password}
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition disabled:opacity-50"
+                >
+                  {loading && <Loader className="h-4 w-4 animate-spin" />}
+                  {loading ? "Signing in…" : "Sign in"}
+                </motion.button>
+              </form>
+            </div>
+
+            {/* Footer note */}
+            <div className="border-t border-stone-100 dark:border-stone-800 px-8 py-4 text-center text-xs text-stone-400 dark:text-stone-500">
+              Only Supabase admin users can access this area.
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Protected admin area</p>
-          </div>
-        </div>
+          <p className="mt-5 text-center text-xs text-stone-400 dark:text-stone-600">
+            Protected admin area
+          </p>
+        </motion.div>
       </div>
     </Layout>
   );

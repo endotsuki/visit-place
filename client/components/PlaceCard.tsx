@@ -1,126 +1,134 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, MapPin, Navigation } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Place } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
+import { cloudinaryUrl } from "@/components/AdminForm";
 
 interface PlaceCardProps {
   place: Place;
-  userLocation?: { lat: number; lng: number };
-  distance?: number;
-  phnomPenhDistance?: number;
-  showingPhnomPenhDistance?: boolean;
 }
 
-export default function PlaceCard({
-  place,
-  distance,
-  phnomPenhDistance,
-  showingPhnomPenhDistance,
-}: PlaceCardProps) {
-  const { i18n, t } = useTranslation();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+export default function PlaceCard({ place }: PlaceCardProps) {
+  const { i18n } = useTranslation();
+  const [imgIndex, setImgIndex] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = next, -1 = prev
 
   const isKhmer = i18n.language === "km";
   const name = isKhmer ? place.name_km : place.name_en;
   const province = isKhmer ? place.province_km : place.province_en;
+  const images = place.images ?? [];
+  const total = images.length;
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % (place.images?.length || 1));
-  };
+  function goNext() {
+    setDirection(1);
+    setImgIndex((i) => (i + 1) % total);
+  }
 
-  const prevImage = () => {
-    setCurrentImageIndex(
-      (prev) =>
-        (prev - 1 + (place.images?.length || 1)) % (place.images?.length || 1),
-    );
-  };
+  function goPrev() {
+    setDirection(-1);
+    setImgIndex((i) => (i - 1 + total) % total);
+  }
 
-  const handleOpenMaps = () => {
-    window.open(place.map_link, "_blank");
+  // Slide animation based on direction
+  const slideVariants = {
+    enter: (dir: number) => ({ x: dir * 60, opacity: 0 }),
+    center: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: (dir: number) => ({
+      x: dir * -60,
+      opacity: 0,
+      transition: { duration: 0.2 },
+    }),
   };
 
   return (
-    <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
-      {/* Image Container */}
-      <div className="relative h-56 bg-muted overflow-hidden">
-        {place.images && place.images.length > 0 ? (
+    <div className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-stone-800 border border-stone-100 dark:border-stone-700 shadow-sm hover:shadow-lg dark:shadow-stone-900/40 transition-all duration-300">
+      {/* ── Image area ── */}
+      <div className="relative h-52 overflow-hidden bg-stone-100 dark:bg-stone-900">
+        {total > 0 ? (
           <>
-            <img
-              src={place.images[currentImageIndex]}
-              alt={name}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            />
-            {place.images.length > 1 && (
+            {/* Sliding image */}
+            <AnimatePresence custom={direction} mode="popLayout">
+              <motion.img
+                key={imgIndex}
+                src={cloudinaryUrl(images[imgIndex])}
+                alt={name}
+                custom={direction}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </AnimatePresence>
+
+            {/* Nav arrows — only shown when multiple images exist */}
+            {total > 1 && (
               <>
-                {/* Previous Button */}
                 <button
-                  onClick={prevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-lg transition-all"
+                  onClick={goPrev}
+                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/40 p-1.5 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-black/60"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
-
-                {/* Next Button */}
                 <button
-                  onClick={nextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-lg transition-all"
+                  onClick={goNext}
+                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/40 p-1.5 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-black/60"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
 
-                {/* Image Counter */}
-                <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-                  {currentImageIndex + 1} / {place.images.length}
+                {/* Dot indicators */}
+                <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 gap-1">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setDirection(i > imgIndex ? 1 : -1);
+                        setImgIndex(i);
+                      }}
+                      className={`h-1.5 rounded-full transition-all duration-200 ${
+                        i === imgIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                      }`}
+                    />
+                  ))}
                 </div>
               </>
             )}
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-            <MapPin className="h-12 w-12 text-muted-foreground" />
+          // Fallback when no images
+          <div className="flex h-full items-center justify-center">
+            <MapPin className="h-10 w-10 text-stone-300 dark:text-stone-600" />
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-4 space-y-3">
-        {/* Title and Province */}
+      {/* ── Card content ── */}
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        {/* Name + province */}
         <div>
-          <h3 className="font-bold text-lg text-foreground line-clamp-2 leading-tight">
+          <h3 className="line-clamp-2 text-base font-bold leading-snug text-stone-800 dark:text-stone-100">
             {name}
           </h3>
-          <p className="text-sm text-secondary font-semibold">{province}</p>
+          <p className="mt-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+            {province}
+          </p>
         </div>
 
-        {/* Distance */}
-        {distance !== undefined ? (
-          <div className="flex items-center gap-2 text-sm font-medium text-primary">
-            <Navigation className="h-4 w-4" />
-            <span>
-              {distance.toFixed(1)} {t("km")}
-            </span>
-          </div>
-        ) : showingPhnomPenhDistance && phnomPenhDistance !== undefined ? (
-          <div className="flex items-center gap-2 text-sm font-medium text-secondary">
-            <Navigation className="h-4 w-4" />
-            <span className="text-xs">
-              From Phnom Penh: {phnomPenhDistance.toFixed(1)} {t("km")}
-            </span>
-          </div>
-        ) : (
-          <div className="text-xs text-muted-foreground italic">
-            {t("enableLocation")}
-          </div>
-        )}
-
-        {/* Open Maps Button */}
-        <Button
-          onClick={handleOpenMaps}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+        {/* Open in Maps button — pushed to bottom */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => window.open(place.map_link, "_blank")}
+          className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 transition-colors duration-200"
         >
-          {t("openInMaps")}
-        </Button>
+          <MapPin className="h-4 w-4" />
+          {isKhmer ? "បើកក្នុងផែនទី" : "Open in Maps"}
+        </motion.button>
       </div>
     </div>
   );
