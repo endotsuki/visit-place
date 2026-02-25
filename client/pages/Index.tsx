@@ -253,7 +253,7 @@ export default function Index() {
                 )}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-14 w-full rounded-2xl border border-stone-700 bg-stone-900/80 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 sm:text-base"
+                className="h-14 w-full rounded-2xl border border-stone-700 bg-stone-900/80 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 sm:text-base"
               />
               <AnimatePresence>
                 {query && (
@@ -315,7 +315,7 @@ export default function Index() {
                     value={province}
                     onValueChange={(value) => setProvince(value)}
                   >
-                    <SelectTrigger className="w-full h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200 focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <SelectTrigger className="w-full h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200">
                       <SelectValue
                         placeholder={t("ជ្រើសរើសខេត្ត", "Select a province")}
                       />

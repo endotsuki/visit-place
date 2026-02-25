@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Place } from "@/lib/supabase";
-import { cloudinaryUrl } from "@/components/AdminForm";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeft01Icon,
@@ -10,6 +9,7 @@ import {
   MapsSquare02Icon,
   Navigation03Icon,
 } from "@hugeicons/core-free-icons";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 
 interface PlaceCardProps {
   place: Place;

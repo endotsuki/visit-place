@@ -1,11 +1,15 @@
-/** @import must precede all other statements */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Khmer:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter+Khmer+Looped:wght@400;700&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Load local fonts */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/InterKhmerLooped.woff2") format("woff2");
+  font-weight: 100 900; /* for variable font */
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   /**
