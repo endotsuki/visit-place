@@ -93,30 +93,30 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
 
   // Filters
-  const [search, setSearch] = useState("");
   const [province, setProvince] = useState("all");
-  const [keyword, setKeyword] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [query, setQuery] = useState("");
 
-  const hasFilters = province !== "all" || keyword.trim() !== "";
+  const hasFilters = province !== "all" || query.trim() !== "";
 
   // Derived: filter places based on current search/filter state
   const visiblePlaces = places.filter((p) => {
-    const name = isKhmer ? p.name_km : p.name_en;
-    const prov = isKhmer ? p.province_km : p.province_en;
+    const name = (isKhmer ? p.name_km : p.name_en)?.toLowerCase() || "";
+    const prov = (isKhmer ? p.province_km : p.province_en)?.toLowerCase() || "";
+    const keywords = p.keywords?.map((k) => k.toLowerCase()) || [];
 
-    const matchesSearch =
-      !search.trim() ||
-      name.toLowerCase().includes(search.toLowerCase()) ||
-      prov.toLowerCase().includes(search.toLowerCase());
+    const q = query.toLowerCase().trim();
 
-    const matchesProvince = province === "all" || prov === province;
+    const matchesQuery =
+      !q ||
+      name.includes(q) ||
+      prov.includes(q) ||
+      keywords.some((k) => k.includes(q));
 
-    const matchesKeyword =
-      !keyword.trim() ||
-      p.keywords.some((k) => k.toLowerCase().includes(keyword.toLowerCase()));
+    const matchesProvince =
+      province === "all" || prov === province.toLowerCase();
 
-    return matchesSearch && matchesProvince && matchesKeyword;
+    return matchesQuery && matchesProvince;
   });
 
   // ── Fetch all places from Supabase ──
@@ -145,7 +145,7 @@ export default function Index() {
 
   const clearFilters = () => {
     setProvince("all");
-    setKeyword("");
+    setQuery("");
   };
 
   // ── Text helpers ──
@@ -233,17 +233,24 @@ export default function Index() {
                   "ស្វែងរកតាមឈ្មោះ ឬខេត្ត…",
                   "Search by name or province…",
                 )}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
                 className="h-14 w-full rounded-2xl border border-stone-700 bg-stone-900/80 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none backdrop-blur-sm transition-all duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 sm:text-base"
               />
+              {/* <input
+                type="text"
+                placeholder={t("ស្វែងរកតាមពាក្យគន្លឹះ…", "Search by keyword…")}
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-white placeholder-stone-500 outline-none transition duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+              /> */}
               <AnimatePresence>
-                {search && (
+                {query && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.7 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.7 }}
-                    onClick={() => setSearch("")}
+                    onClick={() => setQuery("")}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-white transition"
                   >
                     <X className="h-4 w-4" />
@@ -274,7 +281,7 @@ export default function Index() {
                     exit={{ scale: 0 }}
                     className="ml-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-stone-950"
                   >
-                    {(province !== "all" ? 1 : 0) + (keyword.trim() ? 1 : 0)}
+                    {(province !== "all" ? 1 : 0) + (query.trim() ? 1 : 0)}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -310,7 +317,7 @@ export default function Index() {
                       ))}
                   </select>
 
-                  <input
+                  {/* <input
                     type="text"
                     placeholder={t(
                       "ស្វែងរកតាមពាក្យគន្លឹះ…",
@@ -319,7 +326,7 @@ export default function Index() {
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     className="h-12 rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-white placeholder-stone-500 outline-none transition duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                  />
+                  /> */}
                 </div>
 
                 <AnimatePresence>
@@ -414,18 +421,12 @@ export default function Index() {
                       onRemove={() => setProvince("all")}
                     />
                   )}
-                  {keyword.trim() && (
-                    <FilterChip
-                      label={`"${keyword}"`}
-                      onRemove={() => setKeyword("")}
-                    />
-                  )}
                 </AnimatePresence>
               </motion.div>
 
               {/* Cards grid */}
               <motion.div
-                key={`${search}-${province}-${keyword}`}
+                key={`${query}-${province}`}
                 variants={anim.cardGrid}
                 initial="hidden"
                 animate="show"
