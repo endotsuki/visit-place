@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader, X, Upload, ImagePlus } from "lucide-react";
+import { Loader, X, ImagePlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase, Place } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -20,12 +20,10 @@ type FormData = {
   description_en: string;
   keywords: string;
   map_link: string;
-  lat: number;
-  lng: number;
+  distance_from_pp: number; // km from Phnom Penh, entered manually by admin
 };
 
 // ─── Small helpers ────────────────────────────────────────────────
-// Reusable labeled field wrapper
 function Field({
   label,
   children,
@@ -43,13 +41,11 @@ function Field({
   );
 }
 
-// Shared input styles
 const inputCls =
   "h-10 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20";
 const textareaCls = `${inputCls} h-auto py-2.5 resize-none`;
 
-// Upload image to Cloudinary — no eager/transformation params needed.
-// We store the raw URL and transform it via Cloudinary's URL API at display time.
+// Upload image to Cloudinary — store raw URL, transform via URL API at display time
 async function uploadToCloudinary(file: File): Promise<string | null> {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
@@ -80,9 +76,8 @@ async function uploadToCloudinary(file: File): Promise<string | null> {
   }
 }
 
-// Injects Cloudinary URL-based transforms at display time (no preset permissions needed).
-// Before: .../image/upload/photo.jpg
-// After:  .../image/upload/w_1280,h_1280,c_fill,f_webp,q_auto/photo.jpg
+// Injects Cloudinary URL transforms at display time (no preset permissions needed)
+// .../image/upload/photo.jpg → .../image/upload/w_1280,h_1280,c_fill,f_webp,q_auto/photo.jpg
 export function cloudinaryUrl(
   url: string,
   transforms = "w_1280,h_1280,c_fill,f_webp,q_auto",
@@ -109,11 +104,9 @@ export default function AdminForm({ place, onClose }: Props) {
     description_en: place?.description_en ?? "",
     keywords: place?.keywords.join(", ") ?? "",
     map_link: place?.map_link ?? "",
-    lat: place?.coordinates?.lat ?? 0,
-    lng: place?.coordinates?.lng ?? 0,
+    distance_from_pp: place?.distance_from_pp ?? 0,
   });
 
-  // Single onChange handler for all inputs/textareas
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -121,7 +114,6 @@ export default function AdminForm({ place, onClose }: Props) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Upload selected files to Cloudinary
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
@@ -136,22 +128,18 @@ export default function AdminForm({ place, onClose }: Props) {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  // Save (create or update) the place record
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
 
-    // Destructure lat/lng out so they don't get sent as standalone columns to Supabase.
-    // They belong inside `coordinates` only — the table has no separate lat/lng columns.
-    const { lat, lng, keywords, ...rest } = form;
-
+    const { keywords, ...rest } = form;
     const payload = {
       ...rest,
+      distance_from_pp: +form.distance_from_pp,
       keywords: keywords
         .split(",")
         .map((k) => k.trim())
         .filter(Boolean),
-      coordinates: { lat: +lat, lng: +lng },
       images,
     };
 
@@ -169,13 +157,12 @@ export default function AdminForm({ place, onClose }: Props) {
     onClose();
   }
 
-  // ─────────────────────────────────────────────────────────────────
   return (
     <motion.form
       onSubmit={handleSubmit}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
       className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 shadow-xl shadow-stone-200/50 dark:shadow-stone-950/50 overflow-hidden"
     >
       {/* Header */}
@@ -265,33 +252,26 @@ export default function AdminForm({ place, onClose }: Props) {
           </Field>
         </div>
 
-        {/* Coordinates */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="Latitude">
+        {/* Distance from Phnom Penh */}
+        <Field label="Distance from Phnom Penh (km)">
+          <div className="relative">
             <input
-              className={inputCls}
+              className={inputCls + " pr-12"}
               type="number"
-              name="lat"
-              value={form.lat}
+              name="distance_from_pp"
+              value={form.distance_from_pp}
               onChange={onChange}
-              step="0.000001"
+              min="0"
+              placeholder="e.g. 314"
               required
             />
-          </Field>
-          <Field label="Longitude">
-            <input
-              className={inputCls}
-              type="number"
-              name="lng"
-              value={form.lng}
-              onChange={onChange}
-              step="0.000001"
-              required
-            />
-          </Field>
-        </div>
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-stone-400">
+              km
+            </span>
+          </div>
+        </Field>
 
-        {/* Map link */}
+        {/* Google Maps Link */}
         <Field label="Google Maps Link">
           <input
             className={inputCls}
@@ -321,7 +301,6 @@ export default function AdminForm({ place, onClose }: Props) {
             Images
           </p>
 
-          {/* Upload button */}
           <input
             ref={fileInputRef}
             type="file"
@@ -346,7 +325,6 @@ export default function AdminForm({ place, onClose }: Props) {
             {uploading ? "Uploading…" : "Upload Images"}
           </motion.button>
 
-          {/* Image grid */}
           <AnimatePresence>
             {images.length > 0 && (
               <motion.div
@@ -385,7 +363,7 @@ export default function AdminForm({ place, onClose }: Props) {
         </div>
       </div>
 
-      {/* Footer actions */}
+      {/* Footer */}
       <div className="flex gap-3 border-t border-stone-100 dark:border-stone-800 px-6 py-4">
         <motion.button
           type="submit"

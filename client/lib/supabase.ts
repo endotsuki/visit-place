@@ -1,10 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase URL or key. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file');
+  throw new Error(
+    "Missing Supabase URL or key. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file",
+  );
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
@@ -18,10 +20,7 @@ export interface Place {
   description_km: string;
   description_en: string;
   keywords: string[];
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
+  distance_from_pp?: number;
   map_link: string;
   images: string[];
   created_at: string;

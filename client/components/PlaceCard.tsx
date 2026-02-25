@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Navigation } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Place } from "@/lib/supabase";
 import { cloudinaryUrl } from "@/components/AdminForm";
@@ -118,6 +118,17 @@ export default function PlaceCard({ place }: PlaceCardProps) {
             {province}
           </p>
         </div>
+
+        {/* Distance from Phnom Penh */}
+        {place.distance_from_pp != null && place.distance_from_pp > 0 && (
+          <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
+            <Navigation className="h-3.5 w-3.5 text-amber-500" />
+            <span>
+              {place.distance_from_pp} km{" "}
+              {isKhmer ? "ពីភ្នំពេញ" : "from Phnom Penh"}
+            </span>
+          </div>
+        )}
 
         {/* Open in Maps button — pushed to bottom */}
         <motion.button
