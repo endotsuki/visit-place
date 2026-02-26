@@ -1,0 +1,123 @@
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { Link, useLocation } from 'wouter';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { LogoutSquare01Icon, Moon02Icon, Sun01Icon } from '@hugeicons/core-free-icons';
+
+interface NavLink {
+  to: string;
+  label: string;
+}
+
+interface MobileMenuProps {
+  open: boolean;
+  navLinks: NavLink[];
+  theme: 'light' | 'dark';
+  isAdmin: boolean;
+  onToggleTheme: () => void;
+  onSignOut: () => void;
+  onClose: () => void;
+}
+
+export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleTheme, onSignOut, onClose }: MobileMenuProps) {
+  const { i18n } = useTranslation();
+  const [location] = useLocation();
+
+  function changeLanguage(lang: string) {
+    i18n.changeLanguage(lang);
+    localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
+    onClose();
+  }
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key='mobile-menu'
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className='overflow-hidden border-t border-stone-100/80 bg-white/95 backdrop-blur-xl dark:border-stone-800/60 dark:bg-stone-900/95 md:hidden'
+        >
+          <div className='px-5 py-5'>
+            {/* Nav links */}
+            <nav className='mb-5 space-y-0.5'>
+              {navLinks.map(({ to, label }, i) => (
+                <motion.div
+                  key={to}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 + 0.05 }}
+                >
+                  <Link
+                    to={to}
+                    onClick={onClose}
+                    className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-150 ${
+                      location === to
+                        ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400'
+                        : 'text-stone-700 hover:bg-stone-50 dark:text-stone-300 dark:hover:bg-stone-800/60'
+                    }`}
+                  >
+                    {label}
+                    {location === to && <span className='h-1.5 w-1.5 rounded-full bg-amber-500 dark:bg-amber-400' />}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+
+            {/* Divider */}
+            <div className='mb-4 h-px bg-stone-100 dark:bg-stone-800' />
+
+            {/* Controls */}
+            <div className='flex flex-wrap items-center gap-2'>
+              {/* Theme toggle */}
+              <button
+                onClick={() => {
+                  onToggleTheme();
+                  onClose();
+                }}
+                className='flex items-center gap-2 rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2 text-xs font-medium text-stone-600 transition hover:border-stone-300 hover:bg-stone-100 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
+              >
+                <HugeiconsIcon icon={theme === 'light' ? Moon02Icon : Sun01Icon} className='h-3.5 w-3.5' />
+                {theme === 'light' ? 'Dark mode' : 'Light mode'}
+              </button>
+
+              {/* Language pills */}
+              <div className='flex items-center rounded-xl border border-stone-200 bg-stone-50 p-0.5 dark:border-stone-700 dark:bg-stone-800'>
+                {(['km', 'en'] as const).map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => changeLanguage(lang)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 ${
+                      i18n.language === lang
+                        ? 'bg-white text-amber-700 shadow-sm dark:bg-stone-700 dark:text-amber-400'
+                        : 'text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
+                    }`}
+                  >
+                    {lang === 'km' ? 'ខ្មែរ' : 'EN'}
+                  </button>
+                ))}
+              </div>
+
+              {/* Sign out */}
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    onSignOut();
+                    onClose();
+                  }}
+                  className='flex items-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-3.5 py-2 text-xs font-medium text-red-600 transition hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400 dark:hover:bg-red-950/40'
+                >
+                  <HugeiconsIcon icon={LogoutSquare01Icon} className='h-3.5 w-3.5' />
+                  Sign out
+                </button>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
