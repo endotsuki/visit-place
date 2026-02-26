@@ -19,6 +19,7 @@ import {
   deleteFromCloudinary,
   deleteOrphanedImages,
 } from "@/lib/cloudinary";
+import { Button } from "./ui/button";
 
 interface Props {
   place?: Place;
@@ -40,7 +41,7 @@ type FormData = {
 type UploadItem = { name: string; status: "uploading" | "done" | "error" };
 
 const inputCls =
-  "h-10 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20";
+  "h-10 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
 const textareaCls = `${inputCls} h-auto py-2.5 resize-none`;
 
 function Field({
@@ -165,7 +166,7 @@ export default function AdminForm({ place, onClose }: Props) {
       onSubmit={handleSubmit}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
+      transition={{ duration: 0.35 as const }}
       className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 shadow-xl overflow-hidden"
     >
       {/* Header */}
@@ -176,7 +177,7 @@ export default function AdminForm({ place, onClose }: Props) {
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition"
+          className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
         >
           <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
         </button>
@@ -314,7 +315,7 @@ export default function AdminForm({ place, onClose }: Props) {
             whileTap={{ scale: 0.98 }}
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="inline-flex items-center gap-2 rounded-xl border border-dashed border-stone-300 dark:border-stone-600 bg-stone-50 dark:bg-stone-800/50 px-4 py-2.5 text-sm font-medium text-stone-500 dark:text-stone-400 hover:border-amber-500 hover:text-amber-600 transition disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-dashed border-stone-300 dark:border-stone-600 bg-stone-50 dark:bg-stone-800/50 px-4 py-2.5 text-sm font-medium text-stone-500 dark:text-stone-400 hover:border-primary hover:text-primary disabled:opacity-50"
           >
             <HugeiconsIcon
               icon={isUploading ? Loading03Icon : ImageAdd02Icon}
@@ -347,7 +348,7 @@ export default function AdminForm({ place, onClose }: Props) {
                             ? CheckmarkCircle02Icon
                             : AlertCircleIcon
                       }
-                      className={`h-3.5 w-3.5 shrink-0 ${item.status === "uploading" ? "animate-spin text-amber-500" : item.status === "done" ? "text-green-500" : "text-red-500"}`}
+                      className={`h-3.5 w-3.5 shrink-0 ${item.status === "uploading" ? "animate-spin text-primary" : item.status === "done" ? "text-green-500" : "text-red-500"}`}
                     />
                     <span className="max-w-[200px] truncate">{item.name}</span>
                     <span className="ml-auto font-medium">
@@ -391,7 +392,7 @@ export default function AdminForm({ place, onClose }: Props) {
                     <button
                       type="button"
                       onClick={() => removeImage(url, i)}
-                      className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition"
+                      className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100"
                     >
                       <HugeiconsIcon
                         icon={Cancel01Icon}
@@ -408,13 +409,7 @@ export default function AdminForm({ place, onClose }: Props) {
 
       {/* Footer */}
       <div className="flex gap-3 border-t border-stone-100 dark:border-stone-800 px-6 py-4">
-        <motion.button
-          type="submit"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
-          disabled={saving || images.length === 0 || isUploading}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition disabled:opacity-50"
-        >
+        <Button type="submit" disabled={saving || images.length === 0 || isUploading} className="flex-1">
           {saving && (
             <HugeiconsIcon
               icon={Loading03Icon}
@@ -422,16 +417,10 @@ export default function AdminForm({ place, onClose }: Props) {
             />
           )}
           {saving ? "Saving…" : t("save")}
-        </motion.button>
-        <motion.button
-          type="button"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={onClose}
-          className="flex flex-1 items-center justify-center rounded-xl border border-stone-200 dark:border-stone-700 py-2.5 text-sm font-semibold text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
-        >
+        </Button>
+        <Button variant="blocked" onClick={onClose} className="flex-1">
           {t("cancel")}
-        </motion.button>
+        </Button>
       </div>
     </motion.form>
   );

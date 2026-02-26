@@ -6,6 +6,7 @@ import { Link, useLocation } from 'wouter';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Cancel01Icon, LogoutSquare01Icon, Menu01Icon, Moon02Icon, Sun01Icon } from '@hugeicons/core-free-icons';
 import MobileMenu from './Mobilemenu';
+import { Button } from './ui/button';
 
 export default function Navbar() {
   const { i18n, t } = useTranslation();
@@ -63,7 +64,7 @@ export default function Navbar() {
           {/* ── Brand ── */}
           <Link to='/' className='group flex shrink-0 items-center gap-3'>
             {/* Logo mark */}
-            <div className='relative flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 shadow-[0_2px_12px_rgba(245,158,11,0.4)] transition-all duration-300 group-hover:scale-[1.04] group-hover:shadow-[0_4px_20px_rgba(245,158,11,0.5)]'>
+            <div className='relative flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary via-primary/70 to-red-500 shadow-[0_2px_12px_rgba(245,158,11,0.4)] transition-all duration-300 group-hover:scale-[1.04] group-hover:shadow-[0_4px_20px_rgba(245,158,11,0.5)]'>
               <span className='select-none text-base leading-none'>🇰🇭</span>
               {/* Subtle shine overlay */}
               <div className='absolute inset-0 rounded-[10px] bg-gradient-to-b from-white/20 to-transparent' />
@@ -72,7 +73,7 @@ export default function Navbar() {
             {/* Wordmark */}
             <div className='hidden leading-none sm:block'>
               <p className='text-[14px] font-bold tracking-[-0.02em] text-stone-900 dark:text-stone-50'>Discover</p>
-              <p className='mt-[3px] text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-600 dark:text-amber-500'>Cambodia</p>
+              <p className='mt-[3px] text-[10px] font-semibold uppercase tracking-[0.14em] text-primary dark:text-primary/80'>Cambodia</p>
             </div>
           </Link>
 
@@ -84,14 +85,14 @@ export default function Navbar() {
                 to={to}
                 className={`relative rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   location === to
-                    ? 'text-amber-700 dark:text-amber-400'
+                    ? 'text-primary dark:text-primary/80'
                     : 'text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100'
                 }`}
               >
                 {label}
                 {/* Active underline */}
                 <span
-                  className={`absolute bottom-1 left-4 right-4 h-[2px] rounded-full bg-amber-500 transition-all duration-300 ${
+                  className={`absolute bottom-1 left-4 right-4 h-[2px] rounded-full bg-primary transition-all duration-300 ${
                     location === to ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0'
                   } origin-center`}
                 />
@@ -118,7 +119,7 @@ export default function Navbar() {
                   onClick={() => changeLanguage(lang)}
                   className={`rounded-md px-3 py-1.5 text-[11px] font-semibold transition-all duration-150 ${
                     i18n.language === lang
-                      ? 'bg-white text-amber-700 shadow-sm dark:bg-stone-700 dark:text-amber-400'
+                      ? 'bg-white text-primary shadow-sm dark:bg-stone-700 dark:text-primary/80'
                       : 'text-stone-400 hover:text-stone-700 dark:text-stone-500 dark:hover:text-stone-200'
                   }`}
                 >
@@ -132,13 +133,10 @@ export default function Navbar() {
 
             {/* Sign out */}
             {isAdmin && (
-              <button
-                onClick={signOut}
-                className='flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-stone-400 transition-all duration-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400'
-              >
+              <Button variant='blocked' size='sm' onClick={signOut}>
                 <HugeiconsIcon icon={LogoutSquare01Icon} className='h-3.5 w-3.5' />
                 Sign out
-              </button>
+              </Button>
             )}
           </div>
 

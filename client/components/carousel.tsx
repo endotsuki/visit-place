@@ -74,7 +74,7 @@ export default function DraggableCarousel({ items, height = 220, onSlideClick }:
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
                 {item.subtitle && (
-                  <p className='mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300/90'>{item.subtitle}</p>
+                  <p className='mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary/90'>{item.subtitle}</p>
                 )}
                 <p className='text-xl font-bold leading-none tracking-tight text-white drop-shadow'>{item.title}</p>
               </motion.div>

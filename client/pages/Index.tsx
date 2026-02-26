@@ -6,139 +6,72 @@ import PlaceCard from '@/components/PlaceCard';
 import { supabase, Place } from '@/lib/supabase';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Cancel01Icon, FilterHorizontalIcon, Loading03Icon, MapsSquare01Icon, Search01Icon } from '@hugeicons/core-free-icons';
+import { Cancel01Icon, Loading03Icon, MapsSquare01Icon, Search01Icon } from '@hugeicons/core-free-icons';
 
-// ─── Animation presets ────────────────────────────────────────────
-// Cubic bezier must be typed as a const tuple for framer-motion's Easing type
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const anim = {
-  // fadeUp uses a function variant so each element can have its own stagger delay via `custom`
-  fadeUp: {
-    hidden: { opacity: 0, y: 24 },
-    show: (delay: number = 0) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.55, ease: EASE, delay },
-    }),
-  } as const,
-  card: {
-    hidden: { opacity: 0, y: 28, scale: 0.97 },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { duration: 0.45, ease: EASE },
-    },
-    exit: { opacity: 0, scale: 0.96, transition: { duration: 0.2 } },
+const glass = {
+  base: {
+    background: 'rgba(255,255,255,0.06)',
+    border: '1px solid rgba(255,255,255,0.10)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 2px 12px rgba(0,0,0,0.2)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    outline: 'none',
   },
-  cardGrid: {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
-  },
-  filterPanel: {
-    hidden: { opacity: 0, height: 0 },
-    show: {
-      opacity: 1,
-      height: 'auto',
-      transition: { duration: 0.3, ease: EASE },
-    },
-    exit: { opacity: 0, height: 0, transition: { duration: 0.22 } },
+  focus: {
+    background: 'rgba(255,255,255,0.09)',
+    border: '1px solid rgba(251,191,36,0.40)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 3px rgba(251,191,36,0.10)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    outline: 'none',
   },
 };
 
-// ─── Small reusable pieces ────────────────────────────────────────
-
-// A dismissible tag shown when a filter is active
-function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <motion.span
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      className='inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary'
-    >
-      {label}
-      <button onClick={onRemove} className='transition hover:opacity-70'>
-        <HugeiconsIcon icon={Cancel01Icon} className='h-3 w-3' />
-      </button>
-    </motion.span>
-  );
-}
-
-// Centered loading / empty-state layout
-function CenteredState({ children }: { children: React.ReactNode }) {
-  return <div className='flex flex-col items-center justify-center gap-5 py-36 text-center'>{children}</div>;
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────
-
-// ─── Main component ───────────────────────────────────────────────
 export default function Index() {
-  const { i18n } = useTranslation();
-  const reduceMotion = useReducedMotion();
-  const isKhmer = i18n.language === 'km';
+  const { i18n, t } = useTranslation();
+  const rm = useReducedMotion();
 
-  // Data
   const [places, setPlaces] = useState<Place[]>([]);
   const [provinces, setProvinces] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-
-  // Filters
   const [province, setProvince] = useState('all');
-  const [showFilters, setShowFilters] = useState(false);
   const [query, setQuery] = useState('');
 
   const hasFilters = province !== 'all' || query.trim() !== '';
 
-  // Derived: filter places based on current search/filter state
-  const visiblePlaces = places.filter((p) => {
-    const name = (isKhmer ? p.name_km : p.name_en)?.toLowerCase() || '';
-    const prov = (isKhmer ? p.province_km : p.province_en)?.toLowerCase() || '';
-    const keywords = p.keywords?.map((k) => k.toLowerCase()) || [];
-
+  const visible = places.filter((p) => {
+    const name = (i18n.language === 'km' ? p.name_km : p.name_en)?.toLowerCase() ?? '';
+    const prov = (i18n.language === 'km' ? p.province_km : p.province_en)?.toLowerCase() ?? '';
     const q = query.toLowerCase().trim();
-
-    const matchesQuery = !q || name.includes(q) || prov.includes(q) || keywords.some((k) => k.includes(q));
-
-    const matchesProvince = province === 'all' || prov === province.toLowerCase();
-
-    return matchesQuery && matchesProvince;
+    return (
+      (!q || name.includes(q) || prov.includes(q) || p.keywords?.some((k) => k.toLowerCase().includes(q))) &&
+      (province === 'all' || prov === province.toLowerCase())
+    );
   });
 
-  // ── Fetch all places from Supabase ──
   useEffect(() => {
-    async function loadPlaces() {
-      setLoading(true);
-      const { data, error } = await supabase.from('places').select('*').order('created_at', { ascending: false });
-      if (error) {
-        console.error(error);
+    setLoading(true);
+    supabase
+      .from('places')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (!error) {
+          const list = (data ?? []) as Place[];
+          setPlaces(list);
+          setProvinces(new Set(list.map((p) => (i18n.language === 'km' ? p.province_km : p.province_en))));
+        }
         setLoading(false);
-        return;
-      }
+      });
+  }, [i18n.language]);
 
-      const list = (data ?? []) as Place[];
-      setPlaces(list);
-      setProvinces(new Set(list.map((p) => (isKhmer ? p.province_km : p.province_en))));
-      setLoading(false);
-    }
-    loadPlaces();
-  }, [isKhmer]);
-
-  const clearFilters = () => {
-    setProvince('all');
-    setQuery('');
-  };
-
-  // ── Text helpers ──
-  const t = (km: string, en: string) => (isKhmer ? km : en);
-
-  // ─────────────────────────────────────────────────────────────────
   return (
     <Layout>
-      {/* ── HERO (always dark) ──────────────────────────────────── */}
+      {/* ── Hero / Search ── */}
       <section className='relative overflow-hidden bg-stone-950 text-white'>
-        {/* Background glow */}
+        {/* Ambient glows */}
         <div
           aria-hidden
           className='pointer-events-none absolute -left-40 -top-40 h-[560px] w-[560px] rounded-full bg-primary/40 blur-[100px]'
@@ -148,242 +81,194 @@ export default function Index() {
           className='pointer-events-none absolute -bottom-20 right-0 h-[400px] w-[400px] rounded-full bg-primary/20 blur-[80px]'
         />
 
-        <div className='relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8'>
-          {/* Badge */}
-          <motion.p
-            variants={anim.fadeUp}
-            initial='hidden'
-            animate='show'
-            custom={0}
-            className='mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary'
-          >
-            <HugeiconsIcon icon={MapsSquare01Icon} className='h-3 w-3' />
-            {t('ស្វែករកកន្លែង', 'Discover Cambodia')}
-          </motion.p>
-
-          {/* Headline */}
+        <div className='relative mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28'>
+          {/* Heading */}
           <motion.h1
-            variants={anim.fadeUp}
-            initial='hidden'
-            animate='show'
-            custom={0.08}
-            className='mb-5 text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-[3.75rem]'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE, delay: 0.06 }}
+            className='mb-3 text-4xl font-bold tracking-tight sm:text-5xl'
           >
-            {isKhmer ? (
-              <>
-                ស្វែងរកកន្លែង
-                <br className='hidden sm:block' />
-                ទេសចរណ៍ដ៏ស្អាត
-              </>
-            ) : (
-              <>
-                Find Your Next
-                <br className='hidden sm:block' />
-                <span className='text-primary'>Adventure</span>
-              </>
-            )}
+            {t('search')}
           </motion.h1>
 
-          {/* Subtitle */}
           <motion.p
-            variants={anim.fadeUp}
-            initial='hidden'
-            animate='show'
-            custom={0.16}
-            className='mb-12 max-w-lg text-base leading-relaxed text-stone-400 sm:text-lg'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE, delay: 0.14 }}
+            className='mb-10 text-base text-stone-400 sm:text-lg'
           >
-            {t(
-              'ស្វាគមន៍មកកាន់ប្រទេសកម្ពុជា។ ស្វែងរកដើម្បីរកឃើញកន្លែងទេសចរណ៍ដ៏ស្អាត',
-              'Explore breathtaking destinations across the Kingdom of Cambodia — from ancient temples to pristine coastlines.'
-            )}
+            {t('heroSubtitle')}
           </motion.p>
 
           {/* Search row */}
           <motion.div
-            variants={anim.fadeUp}
-            initial='hidden'
-            animate='show'
-            custom={0.24}
-            className='flex flex-col gap-3 sm:flex-row sm:items-center'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE, delay: 0.22 }}
+            className='flex flex-col gap-3 sm:flex-row'
           >
             {/* Search input */}
             <div className='relative flex-1'>
-              <HugeiconsIcon icon={Search01Icon} className='absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500' />
+              <HugeiconsIcon icon={Search01Icon} className='absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white/30' />
               <input
                 type='text'
-                placeholder={t('ស្វែងរកតាមឈ្មោះ ឬខេត្ត…', 'Search by name or province…')}
+                placeholder={t('searchByName')}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className='h-14 w-full rounded-2xl border border-stone-700 bg-stone-900/80 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 sm:text-base'
+                onFocus={(e) => Object.assign(e.currentTarget.style, glass.focus)}
+                onBlur={(e) => Object.assign(e.currentTarget.style, glass.base)}
+                className='h-12 w-full rounded-2xl pl-11 pr-10 text-sm text-white/90 placeholder-white/25 transition-all duration-200 sm:text-base'
+                style={glass.base}
+              />
+              {/* Top shimmer */}
+              {/* <div
+                className='pointer-events-none absolute inset-x-3 top-0 h-px rounded-full opacity-40'
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }}
               />
               <AnimatePresence>
                 {query && (
                   <motion.button
-                    initial={{ opacity: 0, scale: 0.7 }}
+                    initial={{ opacity: 0, scale: 0.6 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.7 }}
+                    exit={{ opacity: 0, scale: 0.6 }}
+                    transition={{ duration: 0.15, ease: EASE }}
                     onClick={() => setQuery('')}
-                    className='absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 transition hover:text-white'
+                    className='absolute right-3 top1/2 flex h-6 w-6 items-center justify-center rounded-full text-white/40 transition-all duration-150 hover:bg-red-500/20 hover:text-red-400'
+                    style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} className='h-4 w-4' />
+                    <HugeiconsIcon icon={Cancel01Icon} className='h-3 w-3' />
                   </motion.button>
                 )}
-              </AnimatePresence>
+              </AnimatePresence> */}
             </div>
 
-            {/* Filter toggle button */}
-            <motion.button
-              whileHover={reduceMotion ? {} : { scale: 1.02 }}
-              whileTap={reduceMotion ? {} : { scale: 0.97 }}
-              onClick={() => setShowFilters((v) => !v)}
-              className={`inline-flex h-14 shrink-0 items-center gap-2 rounded-2xl border px-6 text-sm font-medium transition-all duration-200 ${
-                showFilters || hasFilters
-                  ? 'border-primary bg-primary/15 text-primary shadow-lg shadow-primary/10'
-                  : 'border-stone-700 bg-stone-900/80 text-stone-300 hover:border-stone-500 hover:text-white'
-              }`}
-            >
-              <HugeiconsIcon icon={FilterHorizontalIcon} className='h-4 w-4' />
-              {t('តម្រង', 'Filters')}
-              <AnimatePresence>
-                {hasFilters && (
-                  <motion.span
-                    key='badge'
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className='ml-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-stone-950'
-                  >
-                    {(province !== 'all' ? 1 : 0) + (query.trim() ? 1 : 0)}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
+            {/* Province select */}
+            <Select value={province} onValueChange={setProvince}>
+              <SelectTrigger className='h-12 w-full rounded-2xl px-4 text-sm text-white/70 sm:w-52' style={glass.base}>
+                <SelectValue placeholder={t('selectProvince')} />
+              </SelectTrigger>
+              <SelectContent className='border border-stone-700 bg-stone-900 text-stone-200'>
+                <SelectGroup>
+                  <SelectItem value='all'>{t('allProvinces')}</SelectItem>
+                  {Array.from(provinces)
+                    .sort()
+                    .map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
+                      </SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </motion.div>
 
-          {/* Expandable filter panel */}
+          {/* Active filter chips */}
           <AnimatePresence>
-            {showFilters && (
+            {hasFilters && (
               <motion.div
-                key='filters'
-                variants={reduceMotion ? {} : anim.filterPanel}
-                initial='hidden'
-                animate='show'
-                exit='exit'
-                className='overflow-hidden'
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25, ease: EASE }}
+                className='mt-4 flex flex-wrap items-center gap-2 overflow-hidden'
               >
-                <div className='mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2'>
-                  <Select value={province} onValueChange={(value) => setProvince(value)}>
-                    <SelectTrigger className='h-12 w-full rounded-xl border border-stone-700 bg-stone-900 px-4 text-sm text-stone-200'>
-                      <SelectValue placeholder={t('ជ្រើសរើសខេត្ត', 'Select a province')} />
-                    </SelectTrigger>
-                    <SelectContent className='border border-stone-700 bg-stone-900 text-stone-200'>
-                      <SelectGroup>
-                        <SelectItem value='all'>{t('ខេត្តទាំងអស់', 'All Provinces')}</SelectItem>
-
-                        {Array.from(provinces)
-                          .sort()
-                          .map((p) => (
-                            <SelectItem key={p} value={p}>
-                              {p}
-                            </SelectItem>
-                          ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <AnimatePresence>
-                  {hasFilters && (
-                    <motion.button
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onClick={clearFilters}
-                      className='mt-3 text-xs text-stone-500 underline underline-offset-2 transition hover:text-primary'
-                    >
-                      {t('លុបតម្រងទាំងអស់', 'Clear all filters')}
-                    </motion.button>
-                  )}
-                </AnimatePresence>
+                {province !== 'all' && (
+                  <span className='inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary'>
+                    {province}
+                    <button onClick={() => setProvince('all')} className='transition hover:opacity-70'>
+                      <HugeiconsIcon icon={Cancel01Icon} className='h-3 w-3' />
+                    </button>
+                  </span>
+                )}
+                <button
+                  onClick={() => {
+                    setProvince('all');
+                    setQuery('');
+                  }}
+                  className='text-xs text-stone-500 underline underline-offset-2 transition hover:text-primary'
+                >
+                  {t('clearAllFilters')}
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </section>
 
-      {/* ── RESULTS (light / dark aware) ───────────────────────── */}
-      <section className='min-h-[60vh] bg-stone-50 transition-colors duration-300 dark:bg-stone-900'>
+      {/* ── Results ── */}
+      <section className='min-h-[60vh] bg-stone-50 dark:bg-stone-900'>
         <div className='mx-auto max-w-full px-4 py-10 sm:px-6 lg:px-8'>
           {/* Loading */}
           {loading && (
-            <CenteredState>
+            <div className='flex flex-col items-center justify-center gap-5 py-36 text-center'>
               <div className='flex h-16 w-16 items-center justify-center rounded-full border border-primary/20 bg-primary/5'>
                 <HugeiconsIcon icon={Loading03Icon} className='h-7 w-7 animate-spin text-primary' />
               </div>
-              <p className='text-sm font-medium tracking-wide text-stone-400 dark:text-stone-500'>
-                {t('កំពុងផ្ទុក…', 'Loading destinations…')}
-              </p>
-            </CenteredState>
+              <p className='text-sm font-medium tracking-wide text-stone-400'>{t('loadingDestinations')}</p>
+            </div>
           )}
 
           {/* Empty state */}
-          {!loading && visiblePlaces.length === 0 && (
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              <CenteredState>
-                <div className='flex h-20 w-20 items-center justify-center rounded-full border border-stone-200 bg-stone-100 dark:border-stone-700 dark:bg-stone-800'>
-                  <HugeiconsIcon icon={MapsSquare01Icon} className='h-8 w-8 text-stone-300 dark:text-stone-600' />
-                </div>
-                <div>
-                  <p className='text-lg font-semibold text-stone-700 dark:text-stone-300'>{t('មិនមានលទ្ធផល', 'No places found')}</p>
-                  <p className='mt-1 text-sm text-stone-400 dark:text-stone-500'>
-                    {t('សូមព្យាយាមស្វែងរកម្តងទៀត', 'Try adjusting your search or clearing filters')}
-                  </p>
-                </div>
-                {hasFilters && (
-                  <motion.button
-                    whileHover={reduceMotion ? {} : { scale: 1.03 }}
-                    whileTap={reduceMotion ? {} : { scale: 0.97 }}
-                    onClick={clearFilters}
-                    className='mt-1 rounded-xl border border-stone-300 px-5 py-2.5 text-sm font-medium text-stone-600 transition hover:border-primary hover:text-primary dark:border-stone-700 dark:text-stone-400 dark:hover:border-primary dark:hover:text-primary'
-                  >
-                    {t('លុបតម្រង', 'Clear filters')}
-                  </motion.button>
-                )}
-              </CenteredState>
+          {!loading && visible.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className='flex flex-col items-center justify-center gap-5 py-36 text-center'
+            >
+              <div className='flex h-20 w-20 items-center justify-center rounded-full border border-stone-200 bg-stone-100 dark:border-stone-700 dark:bg-stone-800'>
+                <HugeiconsIcon icon={MapsSquare01Icon} className='h-8 w-8 text-stone-300 dark:text-stone-600' />
+              </div>
+              <div>
+                <p className='text-lg font-semibold text-stone-700 dark:text-stone-300'>{t('noPlacesFound')}</p>
+                <p className='mt-1 text-sm text-stone-400'>{t('tryAdjustSearch')}</p>
+              </div>
+              {hasFilters && (
+                <button
+                  onClick={() => {
+                    setProvince('all');
+                    setQuery('');
+                  }}
+                  className='rounded-xl border border-stone-300 px-5 py-2.5 text-sm font-medium text-stone-600 transition hover:border-primary hover:text-primary dark:border-stone-700 dark:text-stone-400'
+                >
+                  {t('clearFilters')}
+                </button>
+              )}
             </motion.div>
           )}
 
-          {/* Results */}
-          {!loading && visiblePlaces.length > 0 && (
+          {/* Grid */}
+          {!loading && visible.length > 0 && (
             <>
-              {/* Count + active filter chips */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.35 }}
-                className='mb-7 flex flex-wrap items-center gap-2.5'
+                className='mb-7 text-sm font-medium text-stone-400'
               >
-                <p className='text-sm font-medium text-stone-400 dark:text-stone-500'>
-                  {isKhmer
-                    ? `${visiblePlaces.length} កន្លែង`
-                    : `${visiblePlaces.length} destination${visiblePlaces.length !== 1 ? 's' : ''}`}
-                </p>
-                <AnimatePresence>
-                  {province !== 'all' && <FilterChip label={province} onRemove={() => setProvince('all')} />}
-                </AnimatePresence>
-              </motion.div>
+                {visible.length} {t('destination')}
+                {i18n.language === 'en' && visible.length !== 1 ? 's' : ''}
+              </motion.p>
 
-              {/* Cards grid */}
               <motion.div
                 key={`${query}-${province}`}
-                variants={anim.cardGrid}
                 initial='hidden'
                 animate='show'
+                variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } }}
                 className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
               >
                 <AnimatePresence mode='popLayout'>
-                  {visiblePlaces.map((place) => (
-                    <motion.div key={place.id} variants={anim.card} exit='exit' layout>
+                  {visible.map((place) => (
+                    <motion.div
+                      key={place.id}
+                      layout
+                      variants={{
+                        hidden: { opacity: 0, y: 28, scale: 0.97 },
+                        show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45, ease: EASE } },
+                      }}
+                      exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.2 } }}
+                    >
                       <PlaceCard place={place} />
                     </motion.div>
                   ))}

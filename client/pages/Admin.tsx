@@ -11,6 +11,7 @@ import Layout from "@/components/Layout";
 import AdminForm from "@/components/AdminForm";
 import PlaceRow from "@/components/PlaceRow";
 import { usePlaces } from "@/hooks/usePlaces";
+import { Button } from "@/components/ui/button";
 
 export default function Admin() {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ export default function Admin() {
   if (authChecking) return (
     <Layout>
       <div className="flex h-[60vh] items-center justify-center">
-        <HugeiconsIcon icon={Loading03Icon} className="h-8 w-8 animate-spin text-amber-500" />
+        <HugeiconsIcon icon={Loading03Icon} className="h-8 w-8 animate-spin text-primary" />
       </div>
     </Layout>
   );
@@ -50,12 +51,9 @@ export default function Admin() {
             <p className="mt-1 text-sm text-stone-400">{places.length} place{places.length !== 1 ? "s" : ""} total</p>
           </div>
           {!formOpen && (
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-              onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition"
-            >
+            <Button variant="default" onClick={() => setShowForm(true)}>
               <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" /> {t("addPlace")}
-            </motion.button>
+            </Button>
           )}
         </div>
 
@@ -74,17 +72,14 @@ export default function Admin() {
         {/* List */}
         {loading ? (
           <div className="flex h-40 items-center justify-center">
-            <HugeiconsIcon icon={Loading03Icon} className="h-7 w-7 animate-spin text-amber-500" />
+            <HugeiconsIcon icon={Loading03Icon} className="h-7 w-7 animate-spin text-primary" />
           </div>
         ) : places.length === 0 ? (
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-stone-300 dark:border-stone-700 py-20 text-center">
             <p className="text-stone-400">No places yet</p>
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-              onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition"
-            >
-              <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" /> {t("addPlace")}
-            </motion.button>
+              <Button variant="default" onClick={() => setShowForm(true)}>
+                <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" /> {t("addPlace")}
+              </Button>
           </div>
         ) : (
           <motion.ul variants={{ show: { transition: { staggerChildren: 0.04 } } }} initial="hidden" animate="show" className="space-y-3">

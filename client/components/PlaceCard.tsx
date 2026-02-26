@@ -47,7 +47,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
       onMouseLeave={() => setHovered(false)}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className='group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-3xl bg-neutral-900 shadow-md transition-shadow duration-500 hover:shadow-xl'
+      className='group relative aspect-[5/3] cursor-pointer overflow-hidden rounded-3xl bg-neutral-900 shadow-md transition-shadow duration-500 hover:shadow-xl'
       role='button'
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && handleClick()}
@@ -68,9 +68,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
         </div>
       )}
 
-      {/* ── Premium gradient overlay ── */}
-      <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10' />
-
+      <div className='absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent' />
       {/* ── Top section (distance + image count) ── */}
       <div className='absolute top-4 flex w-full items-center justify-between px-4'>
         <div className='flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-lg'>
@@ -81,7 +79,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
         </div>
 
         {total > 1 && (
-          <div className='flex items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-lg'>
+          <div className='flex items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-lg'>
             <HugeiconsIcon icon={Image03Icon} size={16} />
             <span>{total}</span>
           </div>

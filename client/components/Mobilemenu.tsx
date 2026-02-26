@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'wouter';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { LogoutSquare01Icon, Moon02Icon, Sun01Icon } from '@hugeicons/core-free-icons';
+import { Button } from './ui/button';
 
 interface NavLink {
   to: string;
@@ -56,12 +57,12 @@ export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleThe
                     onClick={onClose}
                     className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-150 ${
                       location === to
-                        ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400'
+                        ? 'bg-primary text-primary-foreground dark:bg-primary/20 dark:text-pretty'
                         : 'text-stone-700 hover:bg-stone-50 dark:text-stone-300 dark:hover:bg-stone-800/60'
                     }`}
                   >
                     {label}
-                    {location === to && <span className='h-1.5 w-1.5 rounded-full bg-amber-500 dark:bg-amber-400' />}
+                    {location === to && <span className='h-1.5 w-1.5 rounded-full bg-primary dark:bg-primary/80' />}
                   </Link>
                 </motion.div>
               ))}
@@ -92,7 +93,7 @@ export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleThe
                     onClick={() => changeLanguage(lang)}
                     className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 ${
                       i18n.language === lang
-                        ? 'bg-white text-amber-700 shadow-sm dark:bg-stone-700 dark:text-amber-400'
+                        ? 'bg-white text-primary shadow-sm dark:bg-stone-700 dark:text-primary/80'
                         : 'text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
                     }`}
                   >
@@ -103,16 +104,17 @@ export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleThe
 
               {/* Sign out */}
               {isAdmin && (
-                <button
+                <Button
+                variant='blocked'
+                size='sm'
                   onClick={() => {
                     onSignOut();
                     onClose();
                   }}
-                  className='flex items-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-3.5 py-2 text-xs font-medium text-red-600 transition hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400 dark:hover:bg-red-950/40'
                 >
                   <HugeiconsIcon icon={LogoutSquare01Icon} className='h-3.5 w-3.5' />
                   Sign out
-                </button>
+                </Button>
               )}
             </div>
           </div>

@@ -3,6 +3,7 @@ import { Place } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Delete01Icon, Edit02Icon, Image01Icon, Tag01Icon, Navigation03Icon } from '@hugeicons/core-free-icons';
+import { Button } from './ui/button';
 
 interface Props {
   place: Place;
@@ -16,92 +17,112 @@ export default function PlaceRow({ place, onEdit, onDelete }: Props) {
   return (
     <motion.li
       variants={{
-        hidden: { opacity: 0, y: 10 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } },
+        hidden: { opacity: 0, y: 12 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
       }}
-      className='group flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-200/80 bg-white px-5 py-4 shadow-sm duration-200 hover:border-stone-300 hover:shadow-md dark:border-stone-700/60 dark:bg-stone-900 dark:hover:border-stone-600'
+      className='group relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-2xl px-5 py-4'
+      style={{
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)',
+        border: '1px solid rgba(255,255,255,0.14)',
+        boxShadow: '0 4px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.2)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+      }}
     >
+      {/* Animated top shimmer line */}
+      <div
+        className='pointer-events-none absolute inset-x-0 top-0 h-px opacity-60 transition-opacity duration-300 group-hover:opacity-100'
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 40%, rgba(251,191,36,0.5) 60%, transparent 100%)',
+        }}
+      />
+
+      {/* Hover amber glow bleed */}
+      <div
+        className='pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100'
+        style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(251,191,36,0.07) 0%, transparent 70%)' }}
+      />
+
+      {/* Corner gloss */}
+      <div
+        className='pointer-events-none absolute left-0 top-0 h-20 w-32 rounded-tl-2xl opacity-30'
+        style={{ background: 'radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.25) 0%, transparent 70%)' }}
+      />
+
       {/* Thumbnail + info */}
-      <div className='flex min-w-0 items-center gap-4'>
+      <div className='relative flex min-w-0 items-center gap-4'>
         {/* Thumbnail */}
-        <div className='relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl bg-stone-100 dark:bg-stone-800'>
+        <div
+          className='relative h-[76px] w-[76px] shrink-0 overflow-hidden rounded-xl'
+          style={{
+            border: '1px solid rgba(255,255,255,0.18)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)',
+          }}
+        >
           {place.images?.[0] ? (
             <img
               src={place.images[0]}
               alt={place.name_en}
-              className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
+              className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
             />
           ) : (
-            <div className='flex h-full items-center justify-center'>
-              <HugeiconsIcon icon={Image01Icon} className='h-6 w-6 text-stone-300 dark:text-stone-600' />
+            <div className='flex h-full items-center justify-center' style={{ background: 'rgba(255,255,255,0.05)' }}>
+              <HugeiconsIcon icon={Image01Icon} size={26} className='text-white/20' />
             </div>
           )}
-          {/* Image count badge */}
-          {(place.images?.length ?? 0) > 1 && (
-            <div className='absolute bottom-1 right-1 rounded-md bg-black/50 px-1.5 py-0.5 text-[9px] font-bold text-white backdrop-blur-sm'>
-              +{place.images!.length}
-            </div>
-          )}
+          {/* Image gloss overlay */}
+          <div
+            className='pointer-events-none absolute inset-0'
+            style={{ background: 'linear-gradient(160deg, rgba(255,255,255,0.15) 0%, transparent 50%)' }}
+          />
         </div>
 
         {/* Text info */}
         <div className='min-w-0'>
-          <p className='truncate text-sm font-bold text-stone-800 dark:text-stone-100'>
+          <p className='truncate text-base font-bold text-white/90'>
             {place.name_en}
-            <span className='ml-1.5 font-normal text-stone-400 dark:text-stone-500'>· {place.name_km}</span>
+            <span className='ml-2 font-normal text-white/40'>· {place.name_km}</span>
           </p>
 
-          <p className='mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-500'>
-            {place.province_en}
-          </p>
+          <p className='mt-0.5 text-xs uppercase'>{place.province_en}</p>
 
           {/* Meta chips */}
-          <div className='mt-1.5 flex flex-wrap items-center gap-2.5 text-[11px] text-stone-400 dark:text-stone-500'>
-            <span className='flex items-center gap-1'>
-              <HugeiconsIcon icon={Image01Icon} className='h-3 w-3' />
-              {place.images?.length ?? 0} {(place.images?.length ?? 0) === 1 ? 'photo' : 'photos'}
-            </span>
-            <span className='h-3 w-px rounded-full bg-stone-200 dark:bg-stone-700' />
-            <span className='flex items-center gap-1'>
-              <HugeiconsIcon icon={Tag01Icon} className='h-3 w-3' />
-              {place.keywords?.length ?? 0} tags
-            </span>
-            {place.distance_from_pp != null && place.distance_from_pp > 0 && (
-              <>
-                <span className='h-3 w-px rounded-full bg-stone-200 dark:bg-stone-700' />
-                <span className='flex items-center gap-1'>
-                  <HugeiconsIcon icon={Navigation03Icon} className='h-3 w-3' />
-                  {place.distance_from_pp} km
-                </span>
-              </>
-            )}
+          <div className='mt-2 flex flex-wrap items-center gap-1.5'>
+            {[
+              { icon: Image01Icon, label: `${place.images?.length ?? 0} ${(place.images?.length ?? 0) === 1 ? 'photo' : 'photos'}` },
+              { icon: Tag01Icon, label: `${place.keywords?.length ?? 0} tags` },
+              ...(place.distance_from_pp != null && place.distance_from_pp > 0
+                ? [{ icon: Navigation03Icon, label: `${place.distance_from_pp} km` }]
+                : []),
+            ].map(({ icon, label }, i) => (
+              <span
+                key={i}
+                className='flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-xs font-medium text-white/55'
+                style={{
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
+                }}
+              >
+                <HugeiconsIcon icon={icon} size={12} className='text-white/40' />
+                {label}w
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Actions */}
-      <div className='flex shrink-0 items-center gap-2'>
-        {/* Edit */}
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => onEdit(place)}
-          className='inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2 text-xs font-semibold text-stone-600 hover:border-amber-400 hover:bg-amber-50 hover:text-amber-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:border-amber-500/60 dark:hover:bg-amber-950/20 dark:hover:text-amber-400'
-        >
-          <HugeiconsIcon icon={Edit02Icon} className='h-3.5 w-3.5' />
+      <div className='relative flex shrink-0 items-center gap-2'>
+        <Button variant='archived' size='sm' onClick={() => onEdit(place)}>
+          <HugeiconsIcon icon={Edit02Icon} className='h-4 w-4' />
           {t('editPlace')}
-        </motion.button>
+        </Button>
 
-        {/* Delete — subtle red tint at rest */}
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => onDelete(place)}
-          className='inline-flex items-center gap-1.5 rounded-xl border border-red-100 bg-red-50/60 px-3.5 py-2 text-xs font-semibold text-red-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-red-900/30 dark:bg-red-950/10 dark:text-red-500/70 dark:hover:border-red-700/60 dark:hover:bg-red-950/30 dark:hover:text-red-400'
-        >
-          <HugeiconsIcon icon={Delete01Icon} className='h-3.5 w-3.5' />
+        <Button variant='blocked' size='sm' onClick={() => onDelete(place)}>
+          <HugeiconsIcon icon={Delete01Icon} className='h-4 w-4' />
           {t('deletePlace')}
-        </motion.button>
+        </Button>
       </div>
     </motion.li>
   );
