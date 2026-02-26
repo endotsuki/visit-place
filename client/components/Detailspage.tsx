@@ -1,12 +1,3 @@
-/**
- * DetailsPage.tsx
- * Route: /details/:slug?id=<place_id>
- *
- * Fetches the place from Supabase using the `id` query param,
- * renders a full-page premium detail view with image gallery,
- * and provides a back button to return to the places list.
- */
-
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
