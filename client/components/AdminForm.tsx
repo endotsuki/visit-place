@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, Place } from '@/lib/supabase';
@@ -51,22 +51,38 @@ export default function AdminForm({ place, onClose }: Props) {
 
   // Track original images so we can diff on save
   const originalImages = place?.images ?? [];
-  const [images, setImages] = useState<string[]>(originalImages);
+  const [images, setImages] = useState<string[]>([]);
 
   const [form, setForm] = useState<FormData>({
-    name_km: place?.name_km ?? '',
-    name_en: place?.name_en ?? '',
-    province_km: place?.province_km ?? '',
-    province_en: place?.province_en ?? '',
-    description_km: place?.description_km ?? '',
-    description_en: place?.description_en ?? '',
-    keywords: place?.keywords.join(', ') ?? '',
-    map_link: place?.map_link ?? '',
-    distance_from_pp: place?.distance_from_pp ?? 0,
+    name_km: '',
+    name_en: '',
+    province_km: '',
+    province_en: '',
+    description_km: '',
+    description_en: '',
+    keywords: '',
+    map_link: '',
+    distance_from_pp: 0,
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  // Sync form and images when place prop changes
+  useEffect(() => {
+    setImages(place?.images ?? []);
+    setForm({
+      name_km: place?.name_km ?? '',
+      name_en: place?.name_en ?? '',
+      province_km: place?.province_km ?? '',
+      province_en: place?.province_en ?? '',
+      description_km: place?.description_km ?? '',
+      description_en: place?.description_en ?? '',
+      keywords: place?.keywords.join(', ') ?? '',
+      map_link: place?.map_link ?? '',
+      distance_from_pp: place?.distance_from_pp ?? 0,
+    });
+  }, [place?.id]);
 
   // Remove image from UI — also delete from Cloudinary immediately
   function removeImage(url: string, index: number) {

@@ -69,17 +69,13 @@ export default function Index() {
 
   return (
     <Layout>
-      {/* ── Hero / Search ── */}
-      <section className='relative overflow-hidden bg-stone-950 text-white'>
-        {/* Ambient glows */}
-        <div
-          aria-hidden
-          className='pointer-events-none absolute -left-40 -top-40 h-[560px] w-[560px] rounded-full bg-primary/40 blur-[100px]'
-        />
-        <div
-          aria-hidden
-          className='pointer-events-none absolute -bottom-20 right-0 h-[400px] w-[400px] rounded-full bg-primary/20 blur-[80px]'
-        />
+      <section
+        className='relative overflow-hidden bg-stone-950 bg-cover bg-center text-white'
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee')",
+        }}
+      >
+        <div className='absolute inset-0 bg-black/50' />
 
         <div className='relative mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28'>
           {/* Heading */}
@@ -87,7 +83,7 @@ export default function Index() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: EASE, delay: 0.06 }}
-            className='mb-3 text-4xl font-bold tracking-tight sm:text-5xl'
+            className='mb-3 text-4xl font-bold uppercase tracking-tight sm:text-6xl'
           >
             {t('search')}
           </motion.h1>

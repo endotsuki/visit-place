@@ -105,7 +105,7 @@ export default function PlaceRow({ place, onEdit, onDelete }: Props) {
                 }}
               >
                 <HugeiconsIcon icon={icon} size={12} className='text-white/40' />
-                {label}w
+                {label}
               </span>
             ))}
           </div>
