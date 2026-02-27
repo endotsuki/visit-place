@@ -57,10 +57,10 @@ export default function Navbar() {
       <div className='mx-auto flex h-[58px] max-w-6xl items-center justify-between gap-4 px-5 sm:px-8'>
         {/* Brand */}
         <Link to='/' className='group flex shrink-0 items-center gap-2.5'>
-          <div className='flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary via-primary/50 to-violet-400 text-[15px] transition-transform duration-200 group-hover:scale-[1.07]'>
-            🇰🇭
+          <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary via-primary/50 to-violet-400 text-[15px] transition-transform duration-200 group-hover:scale-[1.07]'>
+            <img src='/logo.svg' alt='' />
           </div>
-          <p className='text-[13px] font-bold tracking-tight text-white/90'>Discover</p>
+          <p className='text-xl font-medium text-white/90'>Derleng</p>
         </Link>
 
         {/* Desktop controls */}

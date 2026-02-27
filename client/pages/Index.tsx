@@ -78,7 +78,7 @@ export default function Index() {
       <section
         className='relative overflow-hidden bg-stone-950 bg-cover bg-center text-white'
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee')",
+          backgroundImage: "url('/hero-bg.webp')",
         }}
       >
         <div className='absolute inset-0 bg-black/50' />
