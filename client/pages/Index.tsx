@@ -5,8 +5,10 @@ import Layout from '@/components/Layout';
 import PlaceCard from '@/components/PlaceCard';
 import { supabase, Place } from '@/lib/supabase';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CATEGORIES } from '@/lib/categories';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Cancel01Icon, Loading03Icon, MapsSquare01Icon, Search01Icon } from '@hugeicons/core-free-icons';
+import { Button } from '@/components/ui/button';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -21,8 +23,8 @@ const glass = {
   },
   focus: {
     background: 'rgba(255,255,255,0.09)',
-    border: '1px solid rgba(251,191,36,0.40)',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 3px rgba(251,191,36,0.10)',
+    border: '1px solid rgba(255,255,255,0.14)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 3px rgba(255,255,255,0.12)',
     backdropFilter: 'blur(16px)',
     WebkitBackdropFilter: 'blur(16px)',
     outline: 'none',
@@ -35,11 +37,13 @@ export default function Index() {
 
   const [places, setPlaces] = useState<Place[]>([]);
   const [provinces, setProvinces] = useState<Set<string>>(new Set());
+  const [categories, setCategories] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [province, setProvince] = useState('all');
+  const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
 
-  const hasFilters = province !== 'all' || query.trim() !== '';
+  const hasFilters = province !== 'all' || category !== 'all' || query.trim() !== '';
 
   const visible = places.filter((p) => {
     const name = (i18n.language === 'km' ? p.name_km : p.name_en)?.toLowerCase() ?? '';
@@ -47,7 +51,8 @@ export default function Index() {
     const q = query.toLowerCase().trim();
     return (
       (!q || name.includes(q) || prov.includes(q) || p.keywords?.some((k) => k.toLowerCase().includes(q))) &&
-      (province === 'all' || prov === province.toLowerCase())
+      (province === 'all' || prov === province.toLowerCase()) &&
+      (category === 'all' || (p.category?.toLowerCase() ?? '') === category.toLowerCase())
     );
   });
 
@@ -62,6 +67,7 @@ export default function Index() {
           const list = (data ?? []) as Place[];
           setPlaces(list);
           setProvinces(new Set(list.map((p) => (i18n.language === 'km' ? p.province_km : p.province_en))));
+          setCategories(new Set(list.map((p) => p.category ?? '').filter(Boolean)));
         }
         setLoading(false);
       });
@@ -138,8 +144,10 @@ export default function Index() {
                 )}
               </AnimatePresence> */}
             </div>
+          </motion.div>
 
-            {/* Province select */}
+          {/* Province select */}
+          <div className='mt-4 flex flex-wrap gap-3'>
             <Select value={province} onValueChange={setProvince}>
               <SelectTrigger className='h-12 w-full rounded-2xl px-4 text-sm text-white/70 sm:w-52' style={glass.base}>
                 <SelectValue placeholder={t('selectProvince')} />
@@ -157,38 +165,36 @@ export default function Index() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </motion.div>
 
-          {/* Active filter chips */}
-          <AnimatePresence>
-            {hasFilters && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.25, ease: EASE }}
-                className='mt-4 flex flex-wrap items-center gap-2 overflow-hidden'
-              >
-                {province !== 'all' && (
-                  <span className='inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary'>
-                    {province}
-                    <button onClick={() => setProvince('all')} className='transition hover:opacity-70'>
-                      <HugeiconsIcon icon={Cancel01Icon} className='h-3 w-3' />
-                    </button>
-                  </span>
-                )}
-                <button
-                  onClick={() => {
-                    setProvince('all');
-                    setQuery('');
-                  }}
-                  className='text-xs text-stone-500 underline underline-offset-2 transition hover:text-primary'
-                >
-                  {t('clearAllFilters')}
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className='h-12 w-full rounded-2xl px-4 text-sm text-white/70 sm:w-52' style={glass.base}>
+                <SelectValue placeholder='Category' />
+              </SelectTrigger>
+              <SelectContent className='border border-stone-700 bg-stone-900 text-stone-200'>
+                <SelectGroup>
+                  <SelectItem value='all'>All</SelectItem>
+                  {Array.from(categories)
+                    .sort()
+                    .map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button
+              variant='blocked'
+              className='rounded-2xl'
+              onClick={() => {
+                setProvince('all');
+                setCategory('all');
+                setQuery('');
+              }}
+            >
+              {t('clearAllFilters')}
+            </Button>
+          </div>
         </div>
       </section>
 

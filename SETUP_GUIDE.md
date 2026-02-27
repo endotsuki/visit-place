@@ -50,6 +50,7 @@ create table places (
   name_en text not null,
   province_km text not null,
   province_en text not null,
+  category text default '',
   description_km text not null,
   description_en text not null,
   keywords text[] default array[]::text[],

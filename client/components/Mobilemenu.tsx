@@ -12,7 +12,6 @@ interface NavLink {
 
 interface MobileMenuProps {
   open: boolean;
-  navLinks: NavLink[];
   theme: 'light' | 'dark';
   isAdmin: boolean;
   onToggleTheme: () => void;
@@ -20,7 +19,7 @@ interface MobileMenuProps {
   onClose: () => void;
 }
 
-export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleTheme, onSignOut, onClose }: MobileMenuProps) {
+export default function MobileMenu({ open, theme, isAdmin, onToggleTheme, onSignOut, onClose }: MobileMenuProps) {
   const { i18n } = useTranslation();
   const [location] = useLocation();
 
@@ -43,31 +42,6 @@ export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleThe
           className='overflow-hidden border-t border-stone-100/80 bg-white/95 backdrop-blur-xl dark:border-stone-800/60 dark:bg-stone-900/95 md:hidden'
         >
           <div className='px-5 py-5'>
-            {/* Nav links */}
-            <nav className='mb-5 space-y-0.5'>
-              {navLinks.map(({ to, label }, i) => (
-                <motion.div
-                  key={to}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 + 0.05 }}
-                >
-                  <Link
-                    to={to}
-                    onClick={onClose}
-                    className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-150 ${
-                      location === to
-                        ? 'bg-primary text-primary-foreground dark:bg-primary/20 dark:text-pretty'
-                        : 'text-stone-700 hover:bg-stone-50 dark:text-stone-300 dark:hover:bg-stone-800/60'
-                    }`}
-                  >
-                    {label}
-                    {location === to && <span className='h-1.5 w-1.5 rounded-full bg-primary dark:bg-primary/80' />}
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-
             {/* Divider */}
             <div className='mb-4 h-px bg-stone-100 dark:bg-stone-800' />
 
@@ -105,8 +79,8 @@ export default function MobileMenu({ open, navLinks, theme, isAdmin, onToggleThe
               {/* Sign out */}
               {isAdmin && (
                 <Button
-                variant='blocked'
-                size='sm'
+                  variant='blocked'
+                  size='sm'
                   onClick={() => {
                     onSignOut();
                     onClose();

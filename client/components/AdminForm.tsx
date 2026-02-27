@@ -7,6 +7,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { AlertCircleIcon, Cancel01Icon, CheckmarkCircle02Icon, ImageAdd02Icon, Loading03Icon } from '@hugeicons/core-free-icons';
 import { cloudinaryUrl, uploadToCloudinary, deleteFromCloudinary, deleteOrphanedImages } from '@/lib/cloudinary';
 import { PROVINCES } from '@/lib/provinces';
+import { CATEGORIES } from '@/lib/categories';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
@@ -18,6 +19,7 @@ interface Props {
 type FormData = {
   name_km: string;
   name_en: string;
+  category: string;
   province_km: string;
   province_en: string;
   description_km: string;
@@ -56,6 +58,7 @@ export default function AdminForm({ place, onClose }: Props) {
   const [form, setForm] = useState<FormData>({
     name_km: '',
     name_en: '',
+    category: '',
     province_km: '',
     province_en: '',
     description_km: '',
@@ -74,6 +77,7 @@ export default function AdminForm({ place, onClose }: Props) {
     setForm({
       name_km: place?.name_km ?? '',
       name_en: place?.name_en ?? '',
+      category: place?.category ?? '',
       province_km: place?.province_km ?? '',
       province_en: place?.province_en ?? '',
       description_km: place?.description_km ?? '',
@@ -119,7 +123,7 @@ export default function AdminForm({ place, onClose }: Props) {
     const { keywords, ...rest } = form;
     const payload = {
       ...rest,
-      distance_from_pp: +form.distance_from_pp,
+      category: form.category,
       keywords: keywords
         .split(',')
         .map((k) => k.trim())
@@ -271,9 +275,27 @@ export default function AdminForm({ place, onClose }: Props) {
             />
           </Field>
         </div>
-        <Field label='Keywords (comma-separated)'>
-          <input className={inputCls} name='keywords' value={form.keywords} onChange={onChange} placeholder='temple, ancient, cultural' />
-        </Field>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <Field label='Keywords (comma-separated)'>
+            <input className={inputCls} name='keywords' value={form.keywords} onChange={onChange} placeholder='temple, ancient, cultural' />
+          </Field>
+          <Field label='Category'>
+            <Select value={form.category} onValueChange={(val) => setForm((p) => ({ ...p, category: val }))}>
+              <SelectTrigger className='h-10 w-full rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm dark:border-stone-700 dark:bg-stone-900'>
+                <SelectValue placeholder='Choose...' />
+              </SelectTrigger>
+              <SelectContent className='border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-900'>
+                <SelectGroup>
+                  {CATEGORIES.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </Field>
+        </div>
 
         {/* Images */}
         <div>

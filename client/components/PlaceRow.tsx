@@ -82,6 +82,11 @@ export default function PlaceRow({ place, onEdit, onDelete }: Props) {
           <p className='truncate text-base font-bold text-white/90'>
             {place.name_en}
             <span className='ml-2 font-normal text-white/40'>· {place.name_km}</span>
+            {place.category && (
+              <span className='ml-3 inline-block rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white'>
+                {place.category}
+              </span>
+            )}
           </p>
 
           <p className='mt-0.5 text-xs uppercase'>{place.province_en}</p>

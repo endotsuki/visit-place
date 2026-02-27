@@ -12,6 +12,7 @@ create table if not exists places (
   name_en text not null,
   province_km text not null,
   province_en text not null,
+  category text default '',
   description_km text not null,
   description_en text not null,
   keywords text[] default array[]::text[],
@@ -26,6 +27,7 @@ create table if not exists places (
 create index if not exists places_keywords_idx on places using gin(keywords);
 create index if not exists places_province_km_idx on places(province_km);
 create index if not exists places_province_en_idx on places(province_en);
+create index if not exists places_category_idx on places(category);
 create index if not exists places_name_km_idx on places(name_km);
 create index if not exists places_name_en_idx on places(name_en);
 

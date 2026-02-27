@@ -37,7 +37,6 @@ export default function PlaceCard({ place }: PlaceCardProps) {
 
   function handleMouseEnter() {
     setHovered(true);
-    if (total > 1) setImgIndex((i) => (i + 1) % total);
   }
 
   return (
