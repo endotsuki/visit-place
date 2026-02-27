@@ -110,7 +110,6 @@ export default function Index() {
           >
             {/* Search input */}
             <div className='relative flex-1'>
-              <HugeiconsIcon icon={Search01Icon} className='absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white/30' />
               <input
                 type='text'
                 placeholder={t('searchByName')}
@@ -121,7 +120,8 @@ export default function Index() {
                 className='h-12 w-full rounded-2xl pl-11 pr-10 text-sm text-white/90 placeholder-white/25 transition-all duration-200 sm:text-base'
                 style={glass.base}
               />
-              {/* Top shimmer */}
+              <HugeiconsIcon icon={Search01Icon} className='absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white/30' />
+              {/* clear search */}
               {/* <div
                 className='pointer-events-none absolute inset-x-3 top-0 h-px rounded-full opacity-40'
                 style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }}
@@ -134,7 +134,7 @@ export default function Index() {
                     exit={{ opacity: 0, scale: 0.6 }}
                     transition={{ duration: 0.15, ease: EASE }}
                     onClick={() => setQuery('')}
-                    className='absolute right-3 top1/2 flex h-6 w-6 items-center justify-center rounded-full text-white/40 transition-all duration-150 hover:bg-red-500/20 hover:text-red-400'
+                    className='top1/2 absolute right-3 flex h-6 w-6 items-center justify-center rounded-full text-white/40 transition-all duration-150 hover:bg-red-500/20 hover:text-red-400'
                     style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}
                   >
                     <HugeiconsIcon icon={Cancel01Icon} className='h-3 w-3' />
