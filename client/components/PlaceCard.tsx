@@ -19,7 +19,7 @@ interface PlaceCardProps {
 }
 
 export default function PlaceCard({ place }: PlaceCardProps) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [, navigate] = useLocation();
   const [imgIndex, setImgIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -73,7 +73,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
         <div className='flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-lg'>
           <HugeiconsIcon icon={Navigation03Icon} size={16} className='text-accent' />
           <span className='opacity-90'>
-            {place.distance_from_pp} km {isKhmer ? 'ពីភ្នំពេញ' : 'from Phnom Penh'}
+            {place.distance_from_pp} km {t('fromPP')}
           </span>
         </div>
 
