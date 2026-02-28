@@ -170,9 +170,9 @@ export default function DetailsPage() {
     <div className='min-h-screen bg-stone-50 dark:bg-stone-950'>
       {/* ── Top bar ── */}
       <div className='sticky top-0 z-30 border-b border-stone-200/60 bg-white/90 backdrop-blur-xl dark:border-stone-800/60 dark:bg-stone-950/90'>
-        <div className='mx-auto flex h-14 max-w-5xl items-center gap-3 px-5'>
+        <div className='mx-auto flex h-14 max-w-5xl items-center gap-5'>
           <Button onClick={() => navigate('/')}>
-            <HugeiconsIcon icon={ArrowLeft01Icon} className='h-4 w-4' />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={20} />
             {t('home')}
           </Button>
 
@@ -203,25 +203,24 @@ export default function DetailsPage() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className='space-y-8'
           >
-            {/* Gallery */}
             {images.length > 0 ? (
               <Gallery images={images} name={name ?? ''} />
             ) : (
               <div className='flex aspect-[16/9] items-center justify-center rounded-2xl bg-stone-100 dark:bg-stone-800'>
-                <HugeiconsIcon icon={Image01Icon} className='h-12 w-12 text-stone-300 dark:text-stone-600' />
+                <HugeiconsIcon icon={Image01Icon} size={23} className='text-stone-300 dark:text-stone-600' />
               </div>
             )}
 
             {/* Header */}
             <div className='space-y-2'>
               <p className='text-xl font-medium text-stone-700 dark:text-stone-300'>{province}</p>
-              <h1 className='pb-5 text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-50 sm:text-4xl'>{name}</h1>
+              <h1 className='pb-5 text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl'>{name}</h1>
 
               {/* Meta row */}
               <div className='flex flex-wrap items-center gap-3 pt-1'>
                 {place?.distance_from_pp != null && place.distance_from_pp > 0 && (
                   <div className='flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/10 px-3.5 py-2 text-xs font-medium text-white backdrop-blur-lg'>
-                    <HugeiconsIcon icon={Navigation03Icon} size={16} className='text-primary' />
+                    <HugeiconsIcon icon={Navigation03Icon} size={16} className='text-accent' />
                     <span className='text-sm font-semibold text-stone-600 dark:text-stone-300'>
                       {place.distance_from_pp} km {t('fromPP')}
                     </span>
@@ -229,7 +228,7 @@ export default function DetailsPage() {
                 )}
                 {images.length > 0 && (
                   <div className='flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/10 px-3.5 py-2 text-xs font-medium text-white backdrop-blur-lg'>
-                    <HugeiconsIcon icon={Image01Icon} size={16} className='text-primary' />
+                    <HugeiconsIcon icon={Image01Icon} size={16} className='text-accent' />
                     <span className='text-sm font-semibold text-stone-600 dark:text-stone-300'>
                       {images.length} {t('images', { count: images.length })}
                     </span>
