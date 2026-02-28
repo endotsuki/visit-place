@@ -11,6 +11,7 @@ interface Props {
 export default function NearbyPlaces({ currentPlace }: Props) {
   const [nearby, setNearby] = useState<(Place & { distance: number })[]>([]);
   const [, navigate] = useLocation();
+  const MAX_DISTANCE_KM = 50;
 
   useEffect(() => {
     if (!currentPlace?.latitude || !currentPlace?.longitude) return;
@@ -21,15 +22,15 @@ export default function NearbyPlaces({ currentPlace }: Props) {
       if (!data) return;
 
       const results = data
-        .filter(
-          (p) => p.id !== currentPlace.id && p.latitude != null && p.longitude != null // <-- skip if coordinates missing
-        )
-        .map((p) => ({
-          ...p,
-          distance: calculateDistance(currentPlace.latitude!, currentPlace.longitude!, p.latitude!, p.longitude!),
-        }))
+        .filter((p) => p.id !== currentPlace.id && p.latitude != null && p.longitude != null)
+        .map((p) => {
+          const distance = calculateDistance(currentPlace.latitude!, currentPlace.longitude!, p.latitude!, p.longitude!);
+
+          return { ...p, distance };
+        })
+        .filter((p) => p.distance <= MAX_DISTANCE_KM) // 👈 ADD THIS
         .sort((a, b) => a.distance - b.distance)
-        .slice(0, 4); // show top 4 closest
+        .slice(0, 4);
 
       setNearby(results);
     }
