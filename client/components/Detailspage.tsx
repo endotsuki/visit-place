@@ -13,6 +13,7 @@ import {
   Image03Icon,
 } from '@hugeicons/core-free-icons';
 import { Button } from './ui/button';
+import NearbyPlaces from './NearbyPlaces';
 
 function useQueryParam(key: string): string | null {
   if (typeof window === 'undefined') return null;
@@ -253,9 +254,12 @@ export default function DetailsPage() {
               <div className='space-y-2'>
                 <h2 className='font-medium text-stone-400 dark:text-stone-500'>{t('tags')}</h2>
                 <div className='flex flex-wrap gap-2'>
-                  {place.keywords.map((kw: string) => (
-                    <div className='flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white backdrop-blur-lg'>
-                      <span key={kw}>{kw}</span>
+                  {place.keywords.map((kw: string, index: number) => (
+                    <div
+                      key={kw + index}
+                      className='flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white backdrop-blur-lg'
+                    >
+                      <span>{kw}</span>
                     </div>
                   ))}
                 </div>
@@ -271,6 +275,7 @@ export default function DetailsPage() {
             )}
           </motion.div>
         )}
+        {place && <NearbyPlaces currentPlace={place} />}
       </div>
     </div>
   );

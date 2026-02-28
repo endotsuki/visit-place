@@ -20,7 +20,10 @@ create table if not exists places (
   map_link text not null,
   images text[] default array[]::text[],
   created_at timestamp default now(),
-  updated_at timestamp default now()
+  updated_at timestamp default now(),
+  distance_from_pp integer default null,
+  latitude numeric(10, 6) default null,
+  longitude numeric(10, 6) default null
 );
 
 -- Create an index for better search performance
@@ -30,6 +33,9 @@ create index if not exists places_province_en_idx on places(province_en);
 create index if not exists places_category_idx on places(category);
 create index if not exists places_name_km_idx on places(name_km);
 create index if not exists places_name_en_idx on places(name_en);
+CREATE INDEX IF NOT EXISTS places_latitude_idx ON places(latitude);
+CREATE INDEX IF NOT EXISTS places_longitude_idx ON places(longitude);
+CREATE INDEX IF NOT EXISTS places_lat_lng_idx ON places(latitude, longitude);
 
 -- Enable Row Level Security
 alter table places enable row level security;

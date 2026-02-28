@@ -21,6 +21,8 @@ export interface Place {
   keywords: string[];
   distance_from_pp?: number;
   map_link: string;
+  latitude: number;
+  longitude: number;
   images: string[];
   created_at: string;
 }
