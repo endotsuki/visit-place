@@ -176,31 +176,7 @@ export default function AdminForm({ place, onClose }: Props) {
           </Field>
         </div>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-          <Field label='Province (Khmer)'>
-            <Select
-              value={form.province_km}
-              onValueChange={(value) => {
-                const province = PROVINCES.find((p) => p.km === value);
-                if (province) {
-                  setForm((prev) => ({ ...prev, province_km: value, province_en: province.en }));
-                }
-              }}
-            >
-              <SelectTrigger className='h-10 w-full rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm dark:border-stone-700 dark:bg-stone-900'>
-                <SelectValue placeholder='ជ្រើសរើសខេត្ត' />
-              </SelectTrigger>
-              <SelectContent className='border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-900'>
-                <SelectGroup>
-                  {PROVINCES.map((province) => (
-                    <SelectItem key={province.en} value={province.km}>
-                      {province.km}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label='Province (English)'>
+          <Field label='Province'>
             <Select
               value={form.province_en}
               onValueChange={(value) => {
@@ -217,7 +193,24 @@ export default function AdminForm({ place, onClose }: Props) {
                 <SelectGroup>
                   {PROVINCES.map((province) => (
                     <SelectItem key={province.en} value={province.en}>
-                      {province.en}
+                      {province.en} / {province.km}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </Field>
+
+          <Field label='Category'>
+            <Select value={form.category} onValueChange={(val) => setForm((p) => ({ ...p, category: val }))}>
+              <SelectTrigger className='h-10 w-full rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm dark:border-stone-700 dark:bg-stone-900'>
+                <SelectValue placeholder='Choose...' />
+              </SelectTrigger>
+              <SelectContent className='border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-900'>
+                <SelectGroup>
+                  {CATEGORIES.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      {c.label_en} / {c.label_km}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -275,27 +268,9 @@ export default function AdminForm({ place, onClose }: Props) {
             />
           </Field>
         </div>
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-          <Field label='Keywords (comma-separated)'>
-            <input className={inputCls} name='keywords' value={form.keywords} onChange={onChange} placeholder='temple, ancient, cultural' />
-          </Field>
-          <Field label='Category'>
-            <Select value={form.category} onValueChange={(val) => setForm((p) => ({ ...p, category: val }))}>
-              <SelectTrigger className='h-10 w-full rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm dark:border-stone-700 dark:bg-stone-900'>
-                <SelectValue placeholder='Choose...' />
-              </SelectTrigger>
-              <SelectContent className='border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-900'>
-                <SelectGroup>
-                  {CATEGORIES.map((c) => (
-                    <SelectItem key={c.value} value={c.value}>
-                      {c.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </Field>
-        </div>
+        <Field label='Keywords (comma-separated)'>
+          <input className={inputCls} name='keywords' value={form.keywords} onChange={onChange} placeholder='temple, ancient, cultural' />
+        </Field>
 
         {/* Images */}
         <div>
