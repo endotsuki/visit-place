@@ -10,11 +10,22 @@ import AdminForm from '@/components/AdminForm';
 import PlaceRow from '@/components/PlaceRow';
 import { usePlaces } from '@/hooks/usePlaces';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 
 export default function Admin() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const { places, loading, load, remove } = usePlaces();
+  const [confirming, setConfirming] = useState<Place | null>(null);
 
   const [authChecking, setAuthChecking] = useState(true);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
@@ -99,11 +110,32 @@ export default function Admin() {
                   setEditingPlace(p);
                   setShowForm(false);
                 }}
-                onDelete={remove}
+                onDelete={(p) => setConfirming(p)}
               />
             ))}
           </motion.ul>
         )}
+        {/* confirmation dialog */}
+        <AlertDialog open={!!confirming} onOpenChange={(open) => !open && setConfirming(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('deletePlace')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('areYouSureDelete') || 'Are you sure you want to delete this place?'}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel variant='archived'>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction
+                variant='blocked'
+                onClick={() => {
+                  if (confirming) remove(confirming);
+                  setConfirming(null);
+                }}
+              >
+                {t('delete')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   );
