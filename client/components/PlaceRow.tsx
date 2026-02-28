@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Place } from '@/lib/supabase';
 import { CATEGORIES } from '@/lib/categories';
+import { distanceFromPhnomPenh } from '@/lib/distance';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Delete01Icon, Edit02Icon, Image01Icon, Tag01Icon, Navigation03Icon } from '@hugeicons/core-free-icons';
@@ -100,8 +101,8 @@ export default function PlaceRow({ place, onEdit, onDelete }: Props) {
             {[
               { icon: Image01Icon, label: `${place.images?.length ?? 0} ${(place.images?.length ?? 0) === 1 ? 'photo' : 'photos'}` },
               { icon: Tag01Icon, label: `${place.keywords?.length ?? 0} tags` },
-              ...(place.distance_from_pp != null && place.distance_from_pp > 0
-                ? [{ icon: Navigation03Icon, label: `${place.distance_from_pp} km` }]
+              ...(place.latitude != null && place.longitude != null
+                ? [{ icon: Navigation03Icon, label: `${distanceFromPhnomPenh(place.latitude, place.longitude).toFixed(1)} km` }]
                 : []),
             ].map(({ icon, label }, i) => (
               <span

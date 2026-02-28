@@ -9,7 +9,7 @@ export interface Category {
 export const CATEGORIES: Category[] = [
   { value: 'Beach', label_en: 'Beach', label_km: 'ឆ្នេរ' },
   { value: 'Mountain', label_en: 'Mountain', label_km: 'ភ្នំ' },
-  { value: 'Temple', label_en: 'Temple', label_km: 'វត្ត' },
+  { value: 'Temple', label_en: 'Temple', label_km: 'ប្រាសាទ' },
   { value: 'Waterfall', label_en: 'Waterfall', label_km: 'ទឹកជ្រោះ' },
   { value: 'City', label_en: 'City', label_km: 'ទីក្រុង' },
   { value: 'Nature', label_en: 'Nature', label_km: 'ធម្មជាតិ' },

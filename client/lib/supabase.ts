@@ -19,7 +19,6 @@ export interface Place {
   description_km: string;
   description_en: string;
   keywords: string[];
-  distance_from_pp?: number;
   map_link: string;
   latitude: number;
   longitude: number;

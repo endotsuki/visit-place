@@ -10,3 +10,11 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
 
   return R * c;
 }
+
+// Phnom Penh reference coordinates (approx.)
+export const PHNOM_PENH_LAT = 11.556363;
+export const PHNOM_PENH_LNG = 104.928209;
+
+export function distanceFromPhnomPenh(lat: number, lng: number) {
+  return calculateDistance(PHNOM_PENH_LAT, PHNOM_PENH_LNG, lat, lng);
+}

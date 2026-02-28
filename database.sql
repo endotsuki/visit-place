@@ -21,7 +21,6 @@ create table if not exists places (
   images text[] default array[]::text[],
   created_at timestamp default now(),
   updated_at timestamp default now(),
-  distance_from_pp integer default null,
   latitude numeric(10, 6) default null,
   longitude numeric(10, 6) default null
 );
@@ -66,8 +65,8 @@ using (auth.uid() is not null);
 -- Uncomment the INSERT statements below to add sample places
 -- ============================================
 
--- -- Angkor Wat, Siem Reap
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- -- Angkor Wat, Siem Reap (coordinates provided instead of fixed distance)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'អង្គរវត្ត', 'Angkor Wat',
 --   'សៀមរាប', 'Siem Reap',
@@ -76,11 +75,11 @@ using (auth.uid() is not null);
 --   ARRAY['temple', 'ancient', 'heritage', 'UNESCO', 'cultural', 'landmark'],
 --   'https://maps.google.com/?q=13.3667,103.8667',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Angkor_Wat_Temple.jpg/1280px-Angkor_Wat_Temple.jpg'],
---   314
+--   13.3667, 103.8667
 -- );
 
 -- -- Royal Palace, Phnom Penh
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'វិមានព្រះបរមរាជវាំង', 'Royal Palace',
 --   'ភ្នំពេញ', 'Phnom Penh',
@@ -89,11 +88,11 @@ using (auth.uid() is not null);
 --   ARRAY['palace', 'royal', 'historic', 'architecture', 'cultural'],
 --   'https://maps.google.com/?q=11.5564,104.9282',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Royal_Palace%2C_Phnom_Penh.jpg/1280px-Royal_Palace%2C_Phnom_Penh.jpg'],
---   0
+--   11.5564, 104.9282
 -- );
 
 -- -- Tonlé Sap Lake, Siem Reap
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'បឹងទន្លេសាប', 'Tonlé Sap Lake',
 --   'សៀមរាប', 'Siem Reap',
@@ -102,11 +101,11 @@ using (auth.uid() is not null);
 --   ARRAY['lake', 'nature', 'wildlife', 'floating village', 'UNESCO', 'ecosystem'],
 --   'https://maps.google.com/?q=12.8,104.85',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Tonle_Sap_Lake.jpg/1280px-Tonle_Sap_Lake.jpg'],
---   295
+--   12.8, 104.85
 -- );
 
 -- -- Bayon Temple, Siem Reap
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'ប្រាសាទបាយ័ន', 'Bayon Temple',
 --   'សៀមរាប', 'Siem Reap',
@@ -115,11 +114,11 @@ using (auth.uid() is not null);
 --   ARRAY['temple', 'ancient', 'heritage', 'sculpture', 'Angkor', 'cultural'],
 --   'https://maps.google.com/?q=13.4413,103.8591',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Bayon_Temple%2C_Angkor_Thom.jpg/1280px-Bayon_Temple%2C_Angkor_Thom.jpg'],
---   314
+--   13.4413, 103.8591
 -- );
 
 -- -- Preah Vihear Temple, Preah Vihear
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'ប្រាសាទព្រះវិហារ', 'Preah Vihear Temple',
 --   'ព្រះវិហារ', 'Preah Vihear',
@@ -128,11 +127,11 @@ using (auth.uid() is not null);
 --   ARRAY['temple', 'ancient', 'UNESCO', 'mountain', 'heritage', 'scenic'],
 --   'https://maps.google.com/?q=14.3944,104.6814',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Prasat_Preah_Vihear.jpg/1280px-Prasat_Preah_Vihear.jpg'],
---   480
+--   14.3944, 104.6814
 -- );
 
 -- -- Kep Beach, Kep
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'កំពង់សោម', 'Kep Beach',
 --   'កែប', 'Kep',
@@ -141,11 +140,11 @@ using (auth.uid() is not null);
 --   ARRAY['beach', 'seafood', 'coastal', 'relaxing', 'nature', 'crab'],
 --   'https://maps.google.com/?q=10.4833,104.3167',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Kep_Beach_Cambodia.jpg/1280px-Kep_Beach_Cambodia.jpg'],
---   172
+--   10.4833, 104.3167
 -- );
 
 -- -- Sihanoukville Beach, Sihanoukville
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'ក្រុងព្រះសីហនុ', 'Sihanoukville Beach',
 --   'ព្រះសីហនុ', 'Sihanoukville',
@@ -154,11 +153,11 @@ using (auth.uid() is not null);
 --   ARRAY['beach', 'island', 'diving', 'snorkeling', 'coastal', 'resort'],
 --   'https://maps.google.com/?q=10.6293,103.5228',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ochheuteal_Beach.jpg/1280px-Ochheuteal_Beach.jpg'],
---   230
+--   10.6293, 103.5228
 -- );
 
 -- -- Kampot, Kampot
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'កំពត', 'Kampot',
 --   'កំពត', 'Kampot',
@@ -167,11 +166,11 @@ using (auth.uid() is not null);
 --   ARRAY['riverside', 'pepper', 'colonial', 'nature', 'relaxing', 'scenic'],
 --   'https://maps.google.com/?q=10.6167,104.1833',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Kampot_River.jpg/1280px-Kampot_River.jpg'],
---   148
+--   10.6167, 104.1833
 -- );
 
 -- -- Phnom Kulen, Siem Reap
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'ភ្នំគូលែន', 'Phnom Kulen',
 --   'សៀមរាប', 'Siem Reap',
@@ -180,11 +179,11 @@ using (auth.uid() is not null);
 --   ARRAY['mountain', 'waterfall', 'sacred', 'nature', 'Buddha', 'temple'],
 --   'https://maps.google.com/?q=13.5667,104.0833',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Phnom_Kulen_Waterfall.jpg/1280px-Phnom_Kulen_Waterfall.jpg'],
---   355
+--   13.5667, 104.0833
 -- );
 
 -- -- Bamboo Train, Battambang
--- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, distance_from_pp)
+-- INSERT INTO places (name_km, name_en, province_km, province_en, description_km, description_en, keywords, map_link, images, latitude, longitude)
 -- VALUES (
 --   'រថភ្លើងបំបែក បាត់ដំបង', 'Bamboo Train Battambang',
 --   'បាត់ដំបង', 'Battambang',
@@ -193,7 +192,7 @@ using (auth.uid() is not null);
 --   ARRAY['unique', 'adventure', 'train', 'countryside', 'cultural', 'experience'],
 --   'https://maps.google.com/?q=13.0957,103.2022',
 --   ARRAY['https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Bamboo_train_battambang.jpg/1280px-Bamboo_train_battambang.jpg'],
---   291
+--   13.0957, 103.2022
 -- );
 
 -- ============================================

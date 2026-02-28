@@ -8,6 +8,7 @@ import { AlertCircleIcon, Cancel01Icon, CheckmarkCircle02Icon, ImageAdd02Icon, L
 import { cloudinaryUrl, uploadToCloudinary, deleteFromCloudinary, deleteOrphanedImages } from '@/lib/cloudinary';
 import { PROVINCES } from '@/lib/provinces';
 import { CATEGORIES } from '@/lib/categories';
+import { distanceFromPhnomPenh } from '@/lib/distance';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
@@ -26,7 +27,8 @@ type FormData = {
   description_en: string;
   keywords: string;
   map_link: string;
-  distance_from_pp: number;
+  latitude: number;
+  longitude: number;
 };
 
 type UploadItem = { name: string; status: 'uploading' | 'done' | 'error' };
@@ -65,11 +67,20 @@ export default function AdminForm({ place, onClose }: Props) {
     description_en: '',
     keywords: '',
     map_link: '',
-    distance_from_pp: 0,
+    latitude: 0,
+    longitude: 0,
   });
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    setForm(
+      (prev) =>
+        ({
+          ...prev,
+          [name]: type === 'number' ? (value === '' ? 0 : parseFloat(value)) : value,
+        }) as any
+    );
+  };
 
   // Sync form and images when place prop changes
   useEffect(() => {
@@ -84,7 +95,8 @@ export default function AdminForm({ place, onClose }: Props) {
       description_en: place?.description_en ?? '',
       keywords: place?.keywords.join(', ') ?? '',
       map_link: place?.map_link ?? '',
-      distance_from_pp: place?.distance_from_pp ?? 0,
+      latitude: place?.latitude ?? 0,
+      longitude: place?.longitude ?? 0,
     });
   }, [place?.id]);
 
@@ -168,7 +180,7 @@ export default function AdminForm({ place, onClose }: Props) {
       <div className='space-y-5 p-6'>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           <Field label='Name (Khmer)'>
-            <input className={inputCls} name='name_km' value={form.name_km} onChange={onChange} required placeholder='នាមកន្លែង' />
+            <input className={inputCls} name='name_km' value={form.name_km} onChange={onChange} required placeholder='ឈ្មោះកន្លែង' />
           </Field>
 
           <Field label='Name (English)'>
@@ -241,21 +253,38 @@ export default function AdminForm({ place, onClose }: Props) {
           </Field>
         </div>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-          <Field label='Distance from Phnom Penh (km)'>
-            <div className='relative'>
-              <input
-                className={inputCls + ' pr-12'}
-                type='number'
-                name='distance_from_pp'
-                value={form.distance_from_pp}
-                onChange={onChange}
-                min='0'
-                placeholder='e.g. 314'
-                required
-              />
-              <span className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-stone-400'>km</span>
-            </div>
+          <Field label='Latitude'>
+            <input
+              className={inputCls}
+              type='number'
+              name='latitude'
+              value={form.latitude || ''}
+              onChange={onChange}
+              step='any'
+              placeholder='e.g. 11.5564'
+              required
+            />
           </Field>
+          <Field label='Longitude'>
+            <input
+              className={inputCls}
+              type='number'
+              name='longitude'
+              value={form.longitude || ''}
+              onChange={onChange}
+              step='any'
+              placeholder='e.g. 104.9282'
+              required
+            />
+          </Field>
+        </div>
+        {/* show computed distance for convenience */}
+        {form.latitude !== 0 && form.longitude !== 0 && (
+          <p className='text-sm text-stone-500 dark:text-stone-400'>
+            Distance from Phnom Penh: {distanceFromPhnomPenh(form.latitude, form.longitude).toFixed(1)} km
+          </p>
+        )}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           <Field label='Google Maps Link'>
             <input
               className={inputCls}
@@ -267,10 +296,10 @@ export default function AdminForm({ place, onClose }: Props) {
               placeholder='https://maps.google.com/?q=...'
             />
           </Field>
+          <Field label='Keywords (comma-separated)'>
+            <input className={inputCls} name='keywords' value={form.keywords} onChange={onChange} placeholder='temple, ancient, cultural' />
+          </Field>
         </div>
-        <Field label='Keywords (comma-separated)'>
-          <input className={inputCls} name='keywords' value={form.keywords} onChange={onChange} placeholder='temple, ancient, cultural' />
-        </Field>
 
         {/* Images */}
         <div>

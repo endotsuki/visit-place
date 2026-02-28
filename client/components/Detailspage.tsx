@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { supabase, Place } from '@/lib/supabase';
+import { distanceFromPhnomPenh } from '@/lib/distance';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   ArrowLeft01Icon,
@@ -219,11 +220,11 @@ export default function DetailsPage() {
 
               {/* Meta row */}
               <div className='flex flex-wrap items-center gap-3 pt-1'>
-                {place?.distance_from_pp != null && place.distance_from_pp > 0 && (
+                {place?.latitude != null && place.longitude != null && (
                   <div className='flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/10 px-3.5 py-2 text-xs font-medium text-white backdrop-blur-lg'>
                     <HugeiconsIcon icon={Navigation03Icon} size={16} className='text-accent' />
                     <span className='text-sm font-semibold text-stone-600 dark:text-stone-300'>
-                      {place.distance_from_pp} km {t('fromPP')}
+                      {distanceFromPhnomPenh(place.latitude, place.longitude).toFixed(1)} km {t('fromPP')}
                     </span>
                   </div>
                 )}

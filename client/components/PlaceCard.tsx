@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { Place } from '@/lib/supabase';
+import { distanceFromPhnomPenh } from '@/lib/distance';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Navigation03Icon, ImageNotFound01Icon, Image03Icon } from '@hugeicons/core-free-icons';
 
@@ -73,7 +74,9 @@ export default function PlaceCard({ place }: PlaceCardProps) {
         <div className='flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-lg'>
           <HugeiconsIcon icon={Navigation03Icon} size={16} className='text-accent' />
           <span className='opacity-90'>
-            {place.distance_from_pp} km {t('fromPP')}
+            {place.latitude != null && place.longitude != null
+              ? `${distanceFromPhnomPenh(place.latitude, place.longitude).toFixed(1)} km ${t('fromPP')}`
+              : ''}
           </span>
         </div>
 
