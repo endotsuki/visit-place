@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Place } from '@/lib/supabase';
+import { CATEGORIES } from '@/lib/categories';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Delete01Icon, Edit02Icon, Image01Icon, Tag01Icon, Navigation03Icon } from '@hugeicons/core-free-icons';
@@ -84,7 +85,10 @@ export default function PlaceRow({ place, onEdit, onDelete }: Props) {
             <span className='ml-2 font-normal text-white/40'>· {place.name_km}</span>
             {place.category && (
               <span className='ml-3 inline-block rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white'>
-                {place.category}
+                {(() => {
+                  const cat = CATEGORIES.find((x) => x.value === place.category);
+                  return cat ? `${cat.label_en} / ${cat.label_km}` : place.category;
+                })()}
               </span>
             )}
           </p>

@@ -46,7 +46,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
       onMouseLeave={() => setHovered(false)}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className='group relative aspect-[5/3] cursor-pointer overflow-hidden rounded-3xl bg-neutral-900 shadow-md hover:shadow-xl'
+      className='group relative aspect-[6/4] cursor-pointer overflow-hidden rounded-3xl bg-neutral-900 shadow-md hover:shadow-xl'
       role='button'
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && handleClick()}

@@ -123,26 +123,15 @@ export default function Index() {
                 style={glass.base}
               />
               <HugeiconsIcon icon={Search01Icon} className='absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white/30' />
-              {/* clear search */}
-              {/* <div
-                className='pointer-events-none absolute inset-x-3 top-0 h-px rounded-full opacity-40'
-                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }}
-              />
-              <AnimatePresence>
-                {query && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.6 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.6 }}
-                    transition={{ duration: 0.15, ease: EASE }}
-                    onClick={() => setQuery('')}
-                    className='top1/2 absolute right-3 flex h-6 w-6 items-center justify-center rounded-full text-white/40 transition-all duration-150 hover:bg-red-500/20 hover:text-red-400'
-                    style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}
-                  >
-                    <HugeiconsIcon icon={Cancel01Icon} className='h-3 w-3' />
-                  </motion.button>
-                )}
-              </AnimatePresence> */}
+              {query && (
+                <button
+                  type='button'
+                  onClick={() => setQuery('')}
+                  className='group absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-white/60 transition hover:text-red-400'
+                >
+                  <HugeiconsIcon icon={Cancel01Icon} size={20} className='transition-all duration-300 group-hover:rotate-90' />
+                </button>
+              )}
             </div>
           </motion.div>
 
@@ -168,18 +157,22 @@ export default function Index() {
 
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger className='h-12 w-full rounded-2xl px-4 text-sm text-white/70 sm:w-52' style={glass.base}>
-                <SelectValue placeholder='Category' />
+                <SelectValue placeholder={t('category')} />
               </SelectTrigger>
               <SelectContent className='border border-stone-700 bg-stone-900 text-stone-200'>
                 <SelectGroup>
-                  <SelectItem value='all'>All</SelectItem>
+                  <SelectItem value='all'>{t('all')}</SelectItem>
                   {Array.from(categories)
                     .sort()
-                    .map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
-                    ))}
+                    .map((c) => {
+                      const cat = CATEGORIES.find((x) => x.value === c);
+                      const label = cat ? `${cat.label_en} / ${cat.label_km}` : c;
+                      return (
+                        <SelectItem key={c} value={c}>
+                          {label}
+                        </SelectItem>
+                      );
+                    })}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -224,18 +217,19 @@ export default function Index() {
               </div>
               <div>
                 <p className='text-lg font-semibold text-stone-700 dark:text-stone-300'>{t('noPlacesFound')}</p>
-                <p className='mt-1 text-sm text-stone-400'>{t('tryAdjustSearch')}</p>
+                <p className='mt-1 text-stone-400'>{t('tryAdjustSearch')}</p>
               </div>
               {hasFilters && (
-                <button
+                <Button
+                  variant='archived'
                   onClick={() => {
                     setProvince('all');
+                    setCategory('all');
                     setQuery('');
                   }}
-                  className='rounded-xl border border-stone-300 px-5 py-2.5 text-sm font-medium text-stone-600 transition hover:border-primary hover:text-primary dark:border-stone-700 dark:text-stone-400'
                 >
                   {t('clearFilters')}
-                </button>
+                </Button>
               )}
             </motion.div>
           )}
